@@ -1,0 +1,586 @@
+# German translations for WP Default.
+# Copyright (C) 2025 WP Default
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: WP Default 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-02-08 00:00+0000\n"
+"PO-Revision-Date: 2025-02-08 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: German\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: wp-default-dashboard.php
+msgid "WP Default requires PHP %s or higher. You are running PHP %s."
+msgstr "WP Default erfordert PHP %s oder höher. Du verwendest PHP %s."
+
+#: wp-default-dashboard.php
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: includes/class-wpd-settings.php
+msgid "WP Default"
+msgstr "WP Default"
+
+#: includes/class-wpd-settings.php
+msgid ""
+"Customize your WordPress admin area, clean up the dashboard, and apply "
+"security hardening."
+msgstr ""
+"Passe deinen WordPress-Adminbereich an, räume das Dashboard auf und wende "
+"Sicherheitshärtungen an."
+
+#: includes/class-wpd-settings.php
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: includes/class-wpd-settings.php
+msgid "Branding"
+msgstr "Branding"
+
+#: includes/class-wpd-settings.php
+msgid "Hardening"
+msgstr "Absicherung"
+
+#: includes/class-wpd-settings.php
+msgid "Updates"
+msgstr "Aktualisierungen"
+
+#: includes/class-wpd-settings.php
+msgid "Dashboard Widget Manager"
+msgstr "Dashboard-Widget-Verwaltung"
+
+#: includes/class-wpd-settings.php
+msgid ""
+"Control which dashboard widgets are visible to all users. Disabled widgets "
+"will be completely removed from the dashboard."
+msgstr ""
+"Lege fest, welche Dashboard-Widgets für alle Benutzer sichtbar sind. "
+"Deaktivierte Widgets werden vollständig vom Dashboard entfernt."
+
+#: includes/class-wpd-settings.php
+msgid "Enable Widget Manager"
+msgstr "Widget-Verwaltung aktivieren"
+
+#: includes/class-wpd-settings.php
+msgid "Manage dashboard widgets globally for all users."
+msgstr "Dashboard-Widgets global für alle Benutzer verwalten."
+
+#: includes/class-wpd-settings.php
+msgid ""
+"When enabled, only checked widgets below will remain visible on the "
+"dashboard. Unchecked widgets are removed for all users."
+msgstr ""
+"Wenn aktiviert, bleiben nur die unten angehakten Widgets auf dem Dashboard "
+"sichtbar. Nicht angehakte Widgets werden für alle Benutzer entfernt."
+
+#: includes/class-wpd-settings.php
+msgid "Active Widgets"
+msgstr "Aktive Widgets"
+
+#: includes/class-wpd-settings.php
+msgid ""
+"No dashboard widgets detected. Widgets are discovered automatically from "
+"WordPress."
+msgstr ""
+"Keine Dashboard-Widgets erkannt. Widgets werden automatisch von WordPress "
+"erkannt."
+
+#: includes/class-wpd-settings.php
+msgid ""
+"Checked widgets remain visible. Uncheck a widget to remove it from the "
+"dashboard for all users."
+msgstr ""
+"Angehakte Widgets bleiben sichtbar. Entferne den Haken, um ein Widget für "
+"alle Benutzer vom Dashboard zu entfernen."
+
+#: includes/class-wpd-settings.php
+msgid "Top Banner"
+msgstr "Oberes Banner"
+
+#: includes/class-wpd-settings.php
+msgid ""
+"Display a customizable information banner at the top of the dashboard. Use "
+"it for announcements, quick links, or onboarding content with up to 4 "
+"columns."
+msgstr ""
+"Zeige ein anpassbares Informationsbanner oben im Dashboard an. Nutze es "
+"für Ankündigungen, Schnellzugriffe oder Einführungsinhalte mit bis zu "
+"4 Spalten."
+
+#: includes/class-wpd-settings.php
+msgid "Enable Top Banner"
+msgstr "Oberes Banner aktivieren"
+
+#: includes/class-wpd-settings.php
+msgid "Show a custom banner above the dashboard widgets."
+msgstr "Ein benutzerdefiniertes Banner über den Dashboard-Widgets anzeigen."
+
+#: includes/class-wpd-settings.php
+msgid "Headline"
+msgstr "Überschrift"
+
+#: includes/class-wpd-settings.php
+msgid "The main heading displayed at the top of the banner."
+msgstr "Die Hauptueberschrift, die oben im Banner angezeigt wird."
+
+#: includes/class-wpd-settings.php
+msgid "Introduction"
+msgstr "Einleitung"
+
+#: includes/class-wpd-settings.php
+msgid "A short introduction text shown below the headline."
+msgstr "Ein kurzer Einleitungstext, der unter der Überschrift angezeigt wird."
+
+#: includes/class-wpd-settings.php
+msgid "Column %d"
+msgstr "Spalte %d"
+
+#: includes/class-wpd-settings.php
+msgid "Content"
+msgstr "Inhalt"
+
+#: includes/class-wpd-settings.php
+msgid "Button Label"
+msgstr "Button-Beschriftung"
+
+#: includes/class-wpd-settings.php
+msgid "Button URL"
+msgstr "Button-URL"
+
+#: includes/class-wpd-settings.php
+msgid ""
+"Leave empty to hide column %d. Each column can have rich text content and "
+"an optional button."
+msgstr ""
+"Leer lassen, um Spalte %d auszublenden. Jede Spalte kann formatierten Text "
+"und einen optionalen Button enthalten."
+
+#: includes/class-wpd-settings.php
+msgid "Post Types Banner"
+msgstr "Inhaltstypen-Banner"
+
+#: includes/class-wpd-settings.php
+msgid ""
+"Show quick-access buttons on the dashboard for creating new content. Each "
+"button links directly to the \"Add New\" screen of the selected post type "
+"and uses its native WordPress icon and label."
+msgstr ""
+"Zeige Schnellzugriff-Buttons auf dem Dashboard zum Erstellen neuer Inhalte. "
+"Jeder Button verlinkt direkt zum \"Neu erstellen\"-Bildschirm des "
+"gewaehlten Inhaltstyps und verwendet dessen WordPress-Icon und -Bezeichnung."
+
+#: includes/class-wpd-settings.php
+msgid "Enable Post Types Banner"
+msgstr "Inhaltstypen-Banner aktivieren"
+
+#: includes/class-wpd-settings.php
+msgid "Show post type quick-access buttons on the dashboard."
+msgstr "Schnellzugriff-Buttons für Inhaltstypen auf dem Dashboard anzeigen."
+
+#: includes/class-wpd-settings.php
+msgid "Visible Post Types"
+msgstr "Sichtbare Inhaltstypen"
+
+#: includes/class-wpd-settings.php
+msgid ""
+"Select which post types to show in the banner. If none are checked, all "
+"public post types will be displayed."
+msgstr ""
+"Wähle aus, welche Inhaltstypen im Banner angezeigt werden. Wenn keiner "
+"ausgewaehlt ist, werden alle öffentlichen Inhaltstypen angezeigt."
+
+#: includes/class-wpd-settings.php
+msgid "No public post types found."
+msgstr "Keine öffentlichen Inhaltstypen gefunden."
+
+#: includes/class-wpd-settings.php
+msgid "Data"
+msgstr "Daten"
+
+#: includes/class-wpd-settings.php
+msgid "Delete Data on Uninstall"
+msgstr "Daten bei Deinstallation löschen"
+
+#: includes/class-wpd-settings.php
+msgid "Remove all plugin settings when the plugin is deleted."
+msgstr "Alle Plugin-Einstellungen löschen, wenn das Plugin gelöscht wird."
+
+#: includes/class-wpd-settings.php
+msgid ""
+"When enabled, all WP Default options will be permanently removed from the "
+"database upon plugin deletion. Deactivating the plugin does not delete data."
+msgstr ""
+"Wenn aktiviert, werden alle WP Default-Einstellungen beim Löschen des "
+"Plugins dauerhaft aus der Datenbank entfernt. Das Deaktivieren des Plugins "
+"löscht keine Daten."
+
+#: includes/class-wpd-settings.php
+msgid "Login Branding"
+msgstr "Login-Branding"
+
+#: includes/class-wpd-settings.php
+msgid ""
+"Customize the appearance of the WordPress login page with your own logo, "
+"colors, and background image."
+msgstr ""
+"Passe das Erscheinungsbild der WordPress-Anmeldeseite mit eigenem Logo, "
+"Farben und Hintergrundbild an."
+
+#: includes/class-wpd-settings.php
+msgid "Enable Login Branding"
+msgstr "Login-Branding aktivieren"
+
+#: includes/class-wpd-settings.php
+msgid "Customize the WordPress login screen."
+msgstr "WordPress-Anmeldeseite anpassen."
+
+#: includes/class-wpd-settings.php
+msgid "Logo"
+msgstr "Logo"
+
+#: includes/class-wpd-settings.php
+msgid "Select Image"
+msgstr "Bild auswählen"
+
+#: includes/class-wpd-settings.php
+msgid ""
+"Replaces the WordPress logo on the login page. Recommended size: "
+"320x80 pixels."
+msgstr ""
+"Ersetzt das WordPress-Logo auf der Anmeldeseite. Empfohlene Größe: "
+"320x80 Pixel."
+
+#: includes/class-wpd-settings.php
+msgid "Logo Link URL"
+msgstr "Logo-Link-URL"
+
+#: includes/class-wpd-settings.php
+msgid "The URL the logo links to. Defaults to wordpress.org if left empty."
+msgstr ""
+"Die URL, auf die das Logo verlinkt. Standardmäßig wordpress.org, "
+"wenn leer."
+
+#: includes/class-wpd-settings.php
+msgid "Logo Title"
+msgstr "Logo-Titel"
+
+#: includes/class-wpd-settings.php
+msgid ""
+"The tooltip text when hovering over the logo. Defaults to \"Powered by "
+"WordPress\" if left empty."
+msgstr ""
+"Der Tooltip-Text beim Überfahren des Logos. Standardmäßig \"Powered by "
+"WordPress\", wenn leer."
+
+#: includes/class-wpd-settings.php
+msgid "Background Color"
+msgstr "Hintergrundfarbe"
+
+#: includes/class-wpd-settings.php
+msgid "Hex color code for the login page background. Example: #f0f0f1"
+msgstr "Hex-Farbcode für den Hintergrund der Anmeldeseite. Beispiel: #f0f0f1"
+
+#: includes/class-wpd-settings.php
+msgid "Background Image"
+msgstr "Hintergrundbild"
+
+#: includes/class-wpd-settings.php
+msgid ""
+"A full-screen background image for the login page. Will cover the entire "
+"viewport."
+msgstr ""
+"Ein Vollbild-Hintergrundbild für die Anmeldeseite. Wird den gesamten "
+"Bildschirm ausfüllen."
+
+#: includes/class-wpd-settings.php
+msgid "Admin Branding"
+msgstr "Admin-Branding"
+
+#: includes/class-wpd-settings.php
+msgid ""
+"Customize the WordPress admin area with your own footer text and a custom "
+"link in the admin bar."
+msgstr ""
+"Passe den WordPress-Adminbereich mit eigenem Fußzeilentext und einem "
+"benutzerdefinierten Link in der Admin-Leiste an."
+
+#: includes/class-wpd-settings.php
+msgid "Enable Admin Branding"
+msgstr "Admin-Branding aktivieren"
+
+#: includes/class-wpd-settings.php
+msgid "Customize admin footer and admin bar."
+msgstr "Admin-Fußzeile und Admin-Leiste anpassen."
+
+#: includes/class-wpd-settings.php
+msgid "Footer Text"
+msgstr "Fußzeilen-Text"
+
+#: includes/class-wpd-settings.php
+msgid ""
+"Replaces the default \"Thank you for creating with WordPress\" text in the "
+"admin footer. HTML is allowed (links, bold, etc.)."
+msgstr ""
+"Ersetzt den Standard-Text \"Danke, dass du mit WordPress arbeitest\" in der "
+"Admin-Fußzeile. HTML ist erlaubt (Links, Fettschrift usw.)."
+
+#: includes/class-wpd-settings.php
+msgid "Admin Bar Link Label"
+msgstr "Admin-Leiste Link-Beschriftung"
+
+#: includes/class-wpd-settings.php
+msgid ""
+"Adds a custom link to the WordPress admin bar. Enter the visible text here."
+msgstr ""
+"Fügt einen benutzerdefinierten Link zur WordPress Admin-Leiste hinzu. "
+"Gib hier den sichtbaren Text ein."
+
+#: includes/class-wpd-settings.php
+msgid "Admin Bar Link URL"
+msgstr "Admin-Leiste Link-URL"
+
+#: includes/class-wpd-settings.php
+msgid ""
+"The URL for the admin bar link. Both internal and external URLs are "
+"supported."
+msgstr ""
+"Die URL für den Admin-Leiste-Link. Sowohl interne als auch externe URLs "
+"werden unterstützt."
+
+#: includes/class-wpd-settings.php
+msgid "Security Hardening"
+msgstr "Sicherheitshärtung"
+
+#: includes/class-wpd-settings.php
+msgid ""
+"Apply lightweight security measures to reduce your site's attack surface. "
+"These settings remove unnecessary information and disable features commonly "
+"exploited by attackers."
+msgstr ""
+"Wende leichte Sicherheitsmaßnahmen an, um die Angriffsfläche deiner "
+"Website zu reduzieren. Diese Einstellungen entfernen unnötige "
+"Informationen und deaktivieren häufig ausgenutzte Funktionen."
+
+#: includes/class-wpd-settings.php
+msgid "Enable Hardening"
+msgstr "Absicherung aktivieren"
+
+#: includes/class-wpd-settings.php
+msgid "Enable security hardening features."
+msgstr "Sicherheitshärtungs-Funktionen aktivieren."
+
+#: includes/class-wpd-settings.php
+msgid ""
+"Master switch for all hardening options below. Individual features can "
+"still be toggled."
+msgstr ""
+"Hauptschalter für alle folgenden Absicherungsoptionen. Einzelne "
+"Funktionen können weiterhin separat gesteuert werden."
+
+#: includes/class-wpd-settings.php
+msgid "Disable XML-RPC"
+msgstr "XML-RPC deaktivieren"
+
+#: includes/class-wpd-settings.php
+msgid "Completely disable the XML-RPC interface."
+msgstr "Die XML-RPC-Schnittstelle vollständig deaktivieren."
+
+#: includes/class-wpd-settings.php
+msgid ""
+"XML-RPC is a legacy API that is frequently targeted in brute-force attacks. "
+"Disable it unless you use the WordPress mobile app, Jetpack, or other "
+"services that require it."
+msgstr ""
+"XML-RPC ist eine veraltete Schnittstelle, die häufig Ziel von "
+"Brute-Force-Angriffen ist. Deaktiviere sie, es sei denn, du nutzt die "
+"WordPress-App, Jetpack oder andere Dienste, die sie benötigen."
+
+#: includes/class-wpd-settings.php
+msgid "Author Enumeration"
+msgstr "Autoren-Aufzählung"
+
+#: includes/class-wpd-settings.php
+msgid "Off (no protection)"
+msgstr "Aus (kein Schutz)"
+
+#: includes/class-wpd-settings.php
+msgid "Return 404"
+msgstr "404 zurückgeben"
+
+#: includes/class-wpd-settings.php
+msgid "Redirect to homepage"
+msgstr "Zur Startseite weiterleiten"
+
+#: includes/class-wpd-settings.php
+msgid ""
+"Prevents attackers from discovering usernames via ?author=1 URLs. "
+"\"Return 404\" shows a not-found page, \"Redirect\" sends visitors to "
+"the homepage."
+msgstr ""
+"Verhindert, dass Angreifer Benutzernamen über ?author=1-URLs herausfinden. "
+"\"404 zurückgeben\" zeigt eine Fehlerseite, \"Weiterleiten\" leitet "
+"Besucher zur Startseite um."
+
+#: includes/class-wpd-settings.php
+msgid "Remove RSD Link"
+msgstr "RSD-Link entfernen"
+
+#: includes/class-wpd-settings.php
+msgid "Remove the RSD (Really Simple Discovery) link from the header."
+msgstr "Den RSD-Link (Really Simple Discovery) aus dem Header entfernen."
+
+#: includes/class-wpd-settings.php
+msgid ""
+"RSD is only needed for remote publishing clients. Removing it reduces "
+"information leakage."
+msgstr ""
+"RSD wird nur für entfernte Publishing-Clients benötigt. Das Entfernen "
+"reduziert den Informationsabfluss."
+
+#: includes/class-wpd-settings.php
+msgid "Remove WLW Manifest"
+msgstr "WLW-Manifest entfernen"
+
+#: includes/class-wpd-settings.php
+msgid "Remove the Windows Live Writer manifest link."
+msgstr "Den Windows Live Writer Manifest-Link entfernen."
+
+#: includes/class-wpd-settings.php
+msgid ""
+"Windows Live Writer is discontinued software. This link is not needed and "
+"can be safely removed."
+msgstr ""
+"Windows Live Writer ist eingestellte Software. Dieser Link wird nicht "
+"benötigt und kann sicher entfernt werden."
+
+#: includes/class-wpd-settings.php
+msgid "Remove Generator Meta"
+msgstr "Generator-Meta entfernen"
+
+#: includes/class-wpd-settings.php
+msgid "Remove the WordPress version meta tag."
+msgstr "Das WordPress-Versions-Meta-Tag entfernen."
+
+#: includes/class-wpd-settings.php
+msgid ""
+"Hides the WordPress version number from your site's HTML source. Prevents "
+"attackers from targeting version-specific vulnerabilities."
+msgstr ""
+"Versteckt die WordPress-Versionsnummer im HTML-Quelltext deiner Website. "
+"Verhindert, dass Angreifer versionsspezifische Schwachstellen ausnutzen."
+
+#: includes/class-wpd-settings.php
+msgid "Hide Theme/Plugin Editor"
+msgstr "Theme-/Plugin-Editor ausblenden"
+
+#: includes/class-wpd-settings.php
+msgid "Hide the built-in theme and plugin editor menus."
+msgstr "Die integrierten Theme- und Plugin-Editor-Menüs ausblenden."
+
+#: includes/class-wpd-settings.php
+msgid ""
+"Removes the editor menu entries from the admin. For full protection, also "
+"add DISALLOW_FILE_EDIT to wp-config.php."
+msgstr ""
+"Entfernt die Editor-Menüeinträge aus dem Admin. Für vollständigen "
+"Schutz zusätzlich DISALLOW_FILE_EDIT in der wp-config.php ergänzen."
+
+#: includes/class-wpd-settings.php
+msgid "Plugin Updates"
+msgstr "Plugin-Aktualisierungen"
+
+#: includes/class-wpd-settings.php
+msgid ""
+"Configure automatic update checks from GitHub releases or a custom update "
+"server. This allows WP Default to be updated like any other plugin through "
+"the WordPress dashboard."
+msgstr ""
+"Konfiguriere automatische Update-Prüfungen über GitHub-Releases oder "
+"einen eigenen Update-Server. So kann WP Default wie jedes andere Plugin "
+"über das WordPress-Dashboard aktualisiert werden."
+
+#: includes/class-wpd-settings.php
+msgid "Enable Updater"
+msgstr "Updater aktivieren"
+
+#: includes/class-wpd-settings.php
+msgid "Enable automatic update checks."
+msgstr "Automatische Update-Prüfungen aktivieren."
+
+#: includes/class-wpd-settings.php
+msgid ""
+"When enabled, WordPress will periodically check the configured source for "
+"new versions of this plugin."
+msgstr ""
+"Wenn aktiviert, prüft WordPress regelmäßig die konfigurierte Quelle auf "
+"neue Versionen dieses Plugins."
+
+#: includes/class-wpd-settings.php
+msgid "Update Source"
+msgstr "Update-Quelle"
+
+#: includes/class-wpd-settings.php
+msgid "Off"
+msgstr "Aus"
+
+#: includes/class-wpd-settings.php
+msgid "GitHub"
+msgstr "GitHub"
+
+#: includes/class-wpd-settings.php
+msgid "Custom URL"
+msgstr "Eigene URL"
+
+#: includes/class-wpd-settings.php
+msgid ""
+"Choose where to check for updates. GitHub uses the releases API, Custom "
+"URL expects a JSON endpoint."
+msgstr ""
+"Waehle, wo nach Updates gesucht werden soll. GitHub nutzt die "
+"Releases-API, Eigene URL erwartet einen JSON-Endpunkt."
+
+#: includes/class-wpd-settings.php
+msgid "GitHub Repository"
+msgstr "GitHub-Repository"
+
+#: includes/class-wpd-settings.php
+msgid ""
+"Format: username/repository (e.g., acme/wp-default-dashboard). The "
+"repository must have GitHub Releases with zip assets."
+msgstr ""
+"Format: benutzername/repository (z. B. acme/wp-default-dashboard). Das "
+"Repository muss GitHub-Releases mit ZIP-Dateien enthalten."
+
+#: includes/class-wpd-settings.php
+msgid "GitHub Access Token"
+msgstr "GitHub-Zugriffstoken"
+
+#: includes/class-wpd-settings.php
+msgid ""
+"Required only for private repositories. Generate a personal access token "
+"with \"repo\" scope at github.com/settings/tokens."
+msgstr ""
+"Nur für private Repositories erforderlich. Erstelle einen persönlichen "
+"Zugriffstoken mit dem Bereich \"repo\" unter github.com/settings/tokens."
+
+#: includes/class-wpd-settings.php
+msgid "Custom Update URL"
+msgstr "Eigene Update-URL"
+
+#: includes/class-wpd-settings.php
+msgid ""
+"A URL to a JSON file with version info. Must contain \"version\", "
+"\"download_url\", and optionally \"tested\", \"requires_php\" fields."
+msgstr ""
+"Eine URL zu einer JSON-Datei mit Versionsinformationen. Muss \"version\", "
+"\"download_url\" und optional \"tested\", \"requires_php\" enthalten."
+
+#: includes/class-wpd-dashboard.php
+msgid "Create New"
+msgstr "Neu erstellen"
