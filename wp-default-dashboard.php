@@ -4,7 +4,7 @@
  * Plugin URI:  https://github.com/your-org/wp-default-dashboard
  * Description: A clean, standardized WordPress admin baseline — dashboard cleanup, branding, and light hardening.
  * Version:     1.0.0
- * Author:      Your Name
+ * Author: Marc Probst
  * Author URI:  https://your-site.com
  * License:     GPL-2.0-or-later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
