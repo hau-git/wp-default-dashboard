@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: WP Default
- * Plugin URI:  https://github.com/your-org/wp-default-dashboard
+ * Plugin URI:  https://github.com/hau-git/wp-default-dashboard
  * Description: A clean, standardized WordPress admin baseline — dashboard cleanup, branding, and light hardening.
- * Version:     1.0.0
- * Author: Marc Probst
- * Author URI:  https://your-site.com
+ * Version:     1.0.1
+ * Author:      Marc Probst
+ * Author URI:  https://github.com/hau-git
  * License:     GPL-2.0-or-later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: wpd
@@ -20,7 +20,7 @@ if (defined('WPD_VERSION')) {
     return;
 }
 
-define('WPD_VERSION', '1.0.0');
+define('WPD_VERSION', '1.0.1');
 define('WPD_PLUGIN_FILE', __FILE__);
 define('WPD_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('WPD_PLUGIN_URL', plugin_dir_url(__FILE__));
