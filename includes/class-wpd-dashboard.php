@@ -85,7 +85,7 @@ class WPD_Dashboard {
             if (isset($wp_filter['wp_dashboard_setup'])) {
                 foreach ($wp_filter['wp_dashboard_setup']->callbacks as $priority => $callbacks) {
                     foreach ($callbacks as $key => $callback) {
-                        if (is_array($callback['function']) && isset($callback['function'][1]) && $callback['function'][1] === 'disable_dashboard_widgets') {
+                        if (is_array($callback['function']) && isset($callback['function'][0]) && $callback['function'][0] instanceof self && $callback['function'][1] === 'disable_dashboard_widgets') {
                             $removed_callbacks[] = ['function' => $callback['function'], 'priority' => $priority];
                             remove_action('wp_dashboard_setup', $callback['function'], $priority);
                         }
