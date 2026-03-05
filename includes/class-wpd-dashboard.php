@@ -243,23 +243,39 @@ class WPD_Dashboard {
 
         ?>
         <div class="wpd-posttypes-banner">
-            <h3><?php esc_html_e('Create New', 'wpd'); ?></h3>
             <div class="wpd-posttypes-banner__grid">
                 <?php foreach ($post_types as $pt) :
-                    $create_label = $pt->labels->add_new_item ?? $pt->labels->add_new ?? $pt->label;
-                    $create_label = apply_filters('wpd_posttype_button_label', $create_label, $pt);
-
-                    $new_url  = admin_url('post-new.php?post_type=' . $pt->name);
-                    if ($pt->name === 'post') {
-                        $new_url = admin_url('post-new.php');
-                    }
-
-                    $icon_class = self::get_post_type_dashicon($pt);
+                    $counts      = wp_count_posts($pt->name);
+                    $published   = (int) ($counts->publish ?? 0);
+                    $drafts      = (int) ($counts->draft ?? 0);
+                    $description = $pt->description ?? '';
+                    $pt_label    = $pt->labels->name ?? $pt->label;
+                    $icon_class  = self::get_post_type_dashicon($pt);
+                    $list_url    = ($pt->name === 'post') ? admin_url('edit.php') : admin_url('edit.php?post_type=' . $pt->name);
+                    $new_url     = ($pt->name === 'post') ? admin_url('post-new.php') : admin_url('post-new.php?post_type=' . $pt->name);
                     ?>
-                    <a href="<?php echo esc_url($new_url); ?>" class="button wpd-posttypes-banner__btn">
-                        <span class="dashicons <?php echo esc_attr($icon_class); ?>"></span>
-                        <?php echo esc_html($create_label); ?>
-                    </a>
+                    <div class="postbox wpd-pt-card">
+                        <div class="inside">
+                            <div class="wpd-pt-card__header">
+                                <span class="dashicons <?php echo esc_attr($icon_class); ?>"></span>
+                                <strong class="wpd-pt-card__title"><?php echo esc_html($pt_label); ?></strong>
+                            </div>
+                            <p class="wpd-pt-card__counts">
+                                <?php echo esc_html($published . ' ' . __('veröffentlicht', 'wpd')); ?>
+                                <span class="wpd-pt-card__sep"> | </span>
+                                <?php echo esc_html($drafts . ' ' . __('Entwürfe', 'wpd')); ?>
+                            </p>
+                            <?php if (!empty($description)) : ?>
+                                <p class="wpd-pt-card__desc"><?php echo esc_html($description); ?></p>
+                            <?php endif; ?>
+                            <hr class="wpd-pt-card__divider">
+                            <div class="wpd-pt-card__footer">
+                                <a href="<?php echo esc_url($list_url); ?>"><?php esc_html_e('Alle anzeigen', 'wpd'); ?></a>
+                                <span class="wpd-pt-card__sep"> | </span>
+                                <a href="<?php echo esc_url($new_url); ?>">+ <?php esc_html_e('Neu erstellen', 'wpd'); ?></a>
+                            </div>
+                        </div>
+                    </div>
                 <?php endforeach; ?>
             </div>
         </div>
