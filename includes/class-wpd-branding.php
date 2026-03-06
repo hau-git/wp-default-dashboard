@@ -24,10 +24,11 @@ class WPD_Branding {
             add_action('admin_bar_menu', [$this, 'admin_bar_link'], 100);
         }
 
-        // Custom admin bar greeting
+        // Custom admin bar greeting — hook into admin_bar_menu at late priority
+        // so the my-account node already exists; much cheaper than gettext filter.
         $greeting = $options['admin_bar_greeting'] ?? '';
         if (!empty($greeting)) {
-            add_filter('gettext', [$this, 'custom_admin_bar_greeting'], 10, 3);
+            add_action('admin_bar_menu', [$this, 'custom_admin_bar_greeting'], 200);
         }
 
         // Admin color scheme — force for all users
@@ -40,9 +41,13 @@ class WPD_Branding {
             add_action('admin_head', [$this, 'inject_custom_admin_colors']);
         }
 
-        // Environment indicator in admin bar
-        $env = $options['admin_environment'] ?? 'off';
-        if ($env !== 'off') {
+        // Environment indicator in admin bar.
+        // Register hooks when the manual setting is on OR when URLs are
+        // configured so that auto-detection (detect_environment) can fire.
+        $env_manual = $options['admin_environment'] ?? 'off';
+        $has_live   = !empty($options['admin_environment_live_url']);
+        $has_stage  = !empty($options['admin_environment_stage_url']);
+        if ($env_manual !== 'off' || $has_live || $has_stage) {
             add_action('admin_bar_menu', [$this, 'add_environment_indicator'], 5);
             add_action('admin_head', [$this, 'inject_environment_styles']);
             add_action('wp_head', [$this, 'inject_environment_styles']);
@@ -116,18 +121,31 @@ class WPD_Branding {
         return $text;
     }
 
-    public function custom_admin_bar_greeting(string $translation, string $text, string $domain): string {
-        if ($domain !== 'default') {
-            return $translation;
-        }
-        if ($text !== 'Howdy, %s') {
-            return $translation;
-        }
+    public function custom_admin_bar_greeting(\WP_Admin_Bar $wp_admin_bar): void {
         $greeting = wpd_get_option('admin_bar_greeting', '');
-        if (!empty($greeting)) {
-            return $greeting;
+        if (empty($greeting)) {
+            return;
         }
-        return $translation;
+
+        $node = $wp_admin_bar->get_node('my-account');
+        if (!$node) {
+            return;
+        }
+
+        $current_user = wp_get_current_user();
+        $display_name = $current_user->display_name ?? '';
+
+        // Replace the greeting prefix while preserving the display-name span.
+        $new_title = sprintf(
+            '%s <span class="display-name">%s</span>',
+            esc_html(sprintf($greeting, '')),
+            esc_html($display_name)
+        );
+
+        $wp_admin_bar->add_node([
+            'id'    => 'my-account',
+            'title' => $new_title,
+        ]);
     }
 
     public function admin_bar_link(\WP_Admin_Bar $wp_admin_bar): void {

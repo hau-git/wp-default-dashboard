@@ -84,6 +84,24 @@ All plugin data is stored in a single WordPress option: `wpd_options`. Enable "D
 
 ## Changelog
 
+### 1.2.3 — 2026-03-06
+
+**Stability / Bugfixes**
+- Fixed: Environment indicator badge never appeared when using URL-based auto-detection with "Environment" selector set to "Disabled" — hooks are now registered whenever Live URL or Staging URL is configured
+- Fixed: Removed dead `try_gutenberg_panel` removal (panel was removed in WP 5.4)
+- Fixed: `is_array()` guard added to `hide_admin_menu_items()` to prevent TypeError on corrupt stored data (PHP 8)
+
+**Performance**
+- Improved: `wpd_get_options()` now caches its result in a static variable — eliminates repeated `wp_parse_args()` + `get_defaults()` calls across multiple hooks in the same request
+- Improved: Custom admin bar greeting now hooks into `admin_bar_menu` (priority 200) instead of the `gettext` filter — `gettext` fired on every translated string (hundreds per page); `admin_bar_menu` fires once
+
+**Code Quality**
+- Fixed: Maintenance mode text is now translatable via i18n (`__()`)
+- Fixed: Removed redundant `require_once helpers.php` inside activation hook (already loaded before)
+- Fixed: `WPD_VERSION` constant and plugin header version synced to `1.2.3`
+
+---
+
 ### 1.2.2 — 2026-03-06
 
 **Dashboard Tab**
