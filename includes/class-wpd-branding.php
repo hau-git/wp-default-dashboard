@@ -37,8 +37,14 @@ class WPD_Branding {
         }
 
         // Custom admin colors via CSS variables
-        if (!empty($options['admin_primary_color']) || !empty($options['admin_accent_color'])) {
+        $has_custom_colors = !empty($options['admin_primary_color'])
+            || !empty($options['admin_accent_color'])
+            || !empty($options['admin_bar_bg_color'])
+            || !empty($options['admin_bar_text_color'])
+            || !empty($options['admin_menu_text_color']);
+        if ($has_custom_colors) {
             add_action('admin_head', [$this, 'inject_custom_admin_colors']);
+            add_action('wp_head',    [$this, 'inject_custom_admin_colors']);
         }
 
         // Environment indicator in admin bar.
@@ -135,12 +141,15 @@ class WPD_Branding {
         $current_user = wp_get_current_user();
         $display_name = $current_user->display_name ?? '';
 
-        // Replace the greeting prefix while preserving the display-name span.
-        $new_title = sprintf(
-            '%s <span class="display-name">%s</span>',
-            esc_html(sprintf($greeting, '')),
-            esc_html($display_name)
-        );
+        // Preserve the avatar <img> that WP embeds in the node title.
+        $avatar = '';
+        if (preg_match('/<img[^>]+>/i', $node->title, $m)) {
+            $avatar = $m[0];
+        }
+
+        $new_title = esc_html($greeting)
+            . ' <span class="display-name">' . esc_html($display_name) . '</span>'
+            . $avatar;
 
         $wp_admin_bar->add_node([
             'id'    => 'my-account',
@@ -170,10 +179,13 @@ class WPD_Branding {
     }
 
     public function inject_custom_admin_colors(): void {
-        $primary = wpd_get_option('admin_primary_color', '');
-        $accent  = wpd_get_option('admin_accent_color', '');
+        $primary   = wpd_get_option('admin_primary_color', '');
+        $accent    = wpd_get_option('admin_accent_color', '');
+        $bar_bg    = wpd_get_option('admin_bar_bg_color', '');
+        $bar_text  = wpd_get_option('admin_bar_text_color', '');
+        $menu_text = wpd_get_option('admin_menu_text_color', '');
 
-        if (empty($primary) && empty($accent)) {
+        if (empty($primary) && empty($accent) && empty($bar_bg) && empty($bar_text) && empty($menu_text)) {
             return;
         }
 
@@ -183,7 +195,6 @@ class WPD_Branding {
             $p = esc_attr($primary);
             echo ":root { --wp-admin-theme-color: {$p}; }";
             echo "#adminmenu, #adminmenuback, #adminmenuwrap { background: {$p}; }";
-            echo "#adminmenu a { color: rgba(255,255,255,0.85); }";
             echo "#adminmenu li.current a.menu-top, #adminmenu li.wp-has-current-submenu a.wp-has-current-submenu { background: rgba(0,0,0,0.15); }";
             echo "#adminmenu .wp-submenu { background: rgba(0,0,0,0.2); }";
             echo "#adminmenu .wp-submenu a { color: rgba(255,255,255,0.7); }";
@@ -194,6 +205,24 @@ class WPD_Branding {
             $a = esc_attr($accent);
             echo ".wp-core-ui .button-primary { background: {$a}; border-color: {$a}; }";
             echo ".wp-core-ui .button-primary:hover, .wp-core-ui .button-primary:focus { background: {$a}; border-color: {$a}; filter: brightness(0.9); box-shadow: none; }";
+        }
+
+        if (!empty($bar_bg)) {
+            $b = esc_attr($bar_bg);
+            echo "#wpadminbar { background: {$b}; }";
+            echo "#wpadminbar .quicklinks .menupop ul, #wpadminbar .quicklinks .menupop ul li { background: {$b}; }";
+        }
+
+        if (!empty($bar_text)) {
+            $t = esc_attr($bar_text);
+            echo "#wpadminbar .ab-item, #wpadminbar .ab-empty-item, #wpadminbar > #wp-toolbar span.ab-label, #wpadminbar > #wp-toolbar span.noticon { color: {$t}; }";
+            echo "#wpadminbar #adminbarsearch:before { color: {$t}; }";
+        }
+
+        if (!empty($menu_text)) {
+            $m = esc_attr($menu_text);
+            echo "#adminmenu a, #adminmenu .wp-menu-name { color: {$m}; }";
+            echo "#adminmenu .wp-submenu a { color: {$m}; opacity: 0.85; }";
         }
 
         echo '</style>';
@@ -298,29 +327,33 @@ class WPD_Branding {
     public function inject_environment_styles(): void {
         echo '<style id="wpd-env-styles">
             /* ── Top-bar trigger ─────────────────────────────── */
-            #wpadminbar .wpd-env-indicator > .ab-item {
-                display: flex;
-                align-items: center;
-                gap: 6px;
-                height: 32px;
-                padding: 0 8px;
+            #wpadminbar li.wpd-env-indicator > .ab-item,
+            #wpadminbar li.wpd-env-indicator > .ab-empty-item {
+                display: flex !important;
+                align-items: center !important;
+                gap: 6px !important;
+                height: 32px !important;
+                padding: 0 8px !important;
+                line-height: 32px !important;
                 color: #c3c4c7 !important;
-                font-size: 13px;
+                font-size: 13px !important;
                 background: transparent !important;
+                box-sizing: border-box !important;
             }
             .wpd-env-badge {
                 display: inline-flex;
                 align-items: center;
                 gap: 5px;
-                padding: 3px 9px;
+                padding: 2px 9px;
                 border-radius: 4px;
                 font-size: 12px;
                 font-weight: 700;
                 color: #fff;
                 letter-spacing: 0.02em;
-                line-height: 1.5;
+                line-height: 1.4;
+                vertical-align: middle;
             }
-            .wpd-env-arrow { font-size: 9px; opacity: 0.85; }
+            .wpd-env-arrow { font-size: 9px; opacity: 0.85; line-height: 1; }
             .wpd-env-badge.wpd-env-live  { background: #00a32a; }
             .wpd-env-badge.wpd-env-stage { background: #d63638; }
 
