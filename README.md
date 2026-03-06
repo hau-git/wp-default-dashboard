@@ -9,12 +9,13 @@ A clean, standardized WordPress admin baseline plugin — dashboard cleanup, bra
 - **Top Banner** — Custom announcement banner with up to 4 content columns
 - **Post Types Banner** — Card-based quick-access overview per post type with live counts
 
-### Branding
+### Erscheinungsbild (Appearance)
 - **Login Branding** — Custom logo, background color/image, button color, link color on the login screen
-- **Admin Branding** — Custom footer text and admin bar link
+- **Admin Branding** — Custom footer text, admin bar link, and custom greeting (replaces "Howdy, %s")
+- **Environment Indicator** — Dropdown badge (Live=green / Staging=red) in the admin bar with a one-click link to switch environments
 - **Admin Colors** — Force a global color scheme (8 built-in WP schemes) or set custom primary and accent colors via CSS variables
 
-### Hardening
+### Sicherheit (Security)
 - **Disable XML-RPC** — Block the legacy XML-RPC interface
 - **Author Enumeration** — Block `?author=N` scans (404 or redirect)
 - **Remove Meta Tags** — Strip RSD, WLW Manifest, and WordPress generator meta
@@ -27,8 +28,7 @@ A clean, standardized WordPress admin baseline plugin — dashboard cleanup, bra
 - **Disable Emoji Scripts** — Remove unnecessary emoji detection JS and DNS prefetch
 - **Disable jQuery Migrate** — Remove jQuery Migrate from the frontend
 
-### Admin Tools
-- **Environment Indicator** — Colored badge (STAGE/LIVE) in the admin bar for all logged-in users
+### Admin-Werkzeuge (Admin Tools)
 - **Hide Update Notices** — Suppress core/plugin/theme update banners for non-admin users
 - **Maintenance Mode** — Block frontend with HTTP 503 for non-logged-in visitors
 - **Admin Menu Cleanup** — Hide specific menu items from editors and non-admins
@@ -54,9 +54,9 @@ All settings are managed through the admin interface under **Settings → WP Def
 | Tab | Features |
 |-----|----------|
 | **Dashboard** | Widget manager, top banner, post types banner, data settings |
-| **Branding** | Login screen customization, admin colors, footer and bar |
-| **Hardening** | XML-RPC, author enumeration, meta tags, editor menus, advanced hardening |
-| **Admin** | Environment indicator, update notices, maintenance mode, menu cleanup |
+| **Erscheinungsbild** | Login screen customization, admin bar greeting, environment indicator, admin colors, footer |
+| **Sicherheit** | XML-RPC, author enumeration, meta tags, editor menus, advanced hardening |
+| **Admin-Werkzeuge** | Update notices, maintenance mode, menu cleanup |
 | **Updates** | GitHub or custom server update checking |
 
 ## Extensibility
@@ -83,6 +83,22 @@ The plugin provides public hooks and filters for customization:
 All plugin data is stored in a single WordPress option: `wpd_options`. Enable "Delete Data on Uninstall" in settings to clean up when the plugin is deleted.
 
 ## Changelog
+
+### 1.2.0 — 2026-03-06
+
+**Settings Overhaul**
+- Tabs reorganized: Branding → Erscheinungsbild, Hardening → Sicherheit, Admin → Admin-Werkzeuge
+- Environment Indicator moved from Admin-Werkzeuge into Erscheinungsbild (it's a visual feature)
+
+**Erscheinungsbild**
+- Added: Custom admin bar greeting — replace "Howdy, %s" with any text (e.g. "Moin, %s")
+- Added: Live URL and Staging URL fields for the environment indicator
+- Redesigned: Environment indicator now shows as a dropdown in `top-secondary` with a link to switch to the other environment; Live = green badge, Staging = red badge
+
+**Translations**
+- Updated German translation (de_DE) with all new strings
+
+---
 
 ### 1.1.1 — 2026-03-05
 
