@@ -494,7 +494,7 @@ class WPD_Settings {
                 </label>
                 <span class="wpd-section__badge"><?php echo !empty($options['enable_admin_branding']) ? esc_html__('aktiv', 'wpd') : esc_html__('inaktiv', 'wpd'); ?></span>
             </div>
-            <p class="description"><?php esc_html_e('Passe den WordPress-Adminbereich mit eigenem Footer-Text, Admin-Bar-Link und Begrüßungstext an.', 'wpd'); ?></p>
+            <p class="description"><?php esc_html_e('Passe den WordPress-Adminbereich mit eigenem Footer-Text und einem benutzerdefinierten Admin-Bar-Link an.', 'wpd'); ?></p>
 
             <div class="wpd-section__body" data-controlled-by="wpd_toggle_admin_branding">
                 <table class="form-table" role="presentation">
@@ -521,14 +521,29 @@ class WPD_Settings {
                             <p class="description"><?php esc_html_e('Fügt einen benutzerdefinierten Link in die Admin-Bar ein — Beschriftung und URL.', 'wpd'); ?></p>
                         </td>
                     </tr>
+                </table>
+            </div>
+        </div>
+
+        <hr>
+
+        <?php /* ── Begrüßung ────────────────────────────────────────── */ ?>
+        <div class="wpd-section is-active">
+            <div class="wpd-section__head">
+                <span class="wpd-section__title"><?php esc_html_e('Begrüßung', 'wpd'); ?></span>
+            </div>
+            <p class="description"><?php esc_html_e('Zeigt einen persönlichen Begrüßungstext in der Admin-Bar vor dem Benutzernamen an. Immer aktiv — unabhängig vom Admin-Branding.', 'wpd'); ?></p>
+
+            <div class="wpd-section__body">
+                <table class="form-table" role="presentation">
                     <tr>
-                        <th scope="row"><?php esc_html_e('Begrüßung', 'wpd'); ?></th>
+                        <th scope="row"><?php esc_html_e('Begrüßungstext', 'wpd'); ?></th>
                         <td>
                             <input type="text" class="regular-text"
                                    name="<?php echo esc_attr($k); ?>[admin_bar_greeting]"
                                    value="<?php echo esc_attr($options['admin_bar_greeting'] ?? ''); ?>"
-                                   placeholder="<?php esc_attr_e('Willkommen,', 'wpd'); ?>">
-                            <p class="description"><?php esc_html_e('Benutzerdefinierter Begrüßungstext in der Admin-Bar vor dem Nutzernamen. Leer lassen für den WordPress-Standard.', 'wpd'); ?></p>
+                                   placeholder="<?php esc_attr_e('Moin,', 'wpd'); ?>">
+                            <p class="description"><?php esc_html_e('Wird in der Admin-Bar vor dem Nutzernamen angezeigt, z. B. „Moin, Max Mustermann". Feld leeren, um die Begrüßung zu deaktivieren.', 'wpd'); ?></p>
                         </td>
                     </tr>
                 </table>

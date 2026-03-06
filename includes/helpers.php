@@ -50,7 +50,7 @@ function wpd_get_defaults(): array {
         'admin_footer_text'           => '',
         'admin_bar_link_label'        => '',
         'admin_bar_link_url'          => '',
-        'admin_bar_greeting'          => '',
+        'admin_bar_greeting'          => 'Moin,',
 
         'enable_hardening'                 => false,
         'hardening_disable_xmlrpc'         => true,
