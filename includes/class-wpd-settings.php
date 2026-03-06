@@ -506,7 +506,10 @@ class WPD_Settings {
                         <option value="stage" <?php selected($options['admin_environment'] ?? 'off', 'stage'); ?>><?php esc_html_e('Staging', 'wpd'); ?></option>
                         <option value="live" <?php selected($options['admin_environment'] ?? 'off', 'live'); ?>><?php esc_html_e('Live', 'wpd'); ?></option>
                     </select>
-                    <p class="description"><?php esc_html_e('The badge is visible to all logged-in users in the admin bar — both in the backend and on the frontend.', 'wpd'); ?></p>
+                    <p class="description">
+                        <?php esc_html_e('Fallback — used only when the current URL does not match either configured URL below.', 'wpd'); ?>
+                        <?php esc_html_e('The badge is visible to all logged-in users in the admin bar — both in the backend and on the frontend.', 'wpd'); ?>
+                    </p>
                 </td>
             </tr>
             <tr>
@@ -516,7 +519,9 @@ class WPD_Settings {
                            name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[admin_environment_live_url]"
                            value="<?php echo esc_url($options['admin_environment_live_url'] ?? ''); ?>"
                            placeholder="https://example.com">
-                    <p class="description"><?php esc_html_e('URL of the live site. Shown as a link in the environment dropdown when on staging.', 'wpd'); ?></p>
+                    <p class="description">
+                        <?php esc_html_e('URL of the live site. When the plugin is installed on both sites, the badge is auto-detected by comparing this URL with the current site URL — no manual "Environment" selection needed.', 'wpd'); ?>
+                    </p>
                 </td>
             </tr>
             <tr>
@@ -526,7 +531,9 @@ class WPD_Settings {
                            name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[admin_environment_stage_url]"
                            value="<?php echo esc_url($options['admin_environment_stage_url'] ?? ''); ?>"
                            placeholder="https://staging.example.com">
-                    <p class="description"><?php esc_html_e('URL of the staging site. Shown as a link in the environment dropdown when on live.', 'wpd'); ?></p>
+                    <p class="description">
+                        <?php esc_html_e('URL of the staging site. The dropdown always shows a one-click link to switch to the other environment.', 'wpd'); ?>
+                    </p>
                 </td>
             </tr>
         </table>

@@ -84,6 +84,15 @@ All plugin data is stored in a single WordPress option: `wpd_options`. Enable "D
 
 ## Changelog
 
+### 1.2.1 — 2026-03-06
+
+**Erscheinungsbild**
+- Redesigned: Environment indicator dropdown now matches the new design — colored pill badge with dropdown arrow in the top bar; submenu shows "UMGEBUNG WECHSELN" header, current env with "aktuell" label (grey, non-clickable), other env with "→ wechseln" link (green)
+- Added: Auto-detection of environment — when both Live URL and Staging URL are configured on their respective sites, the badge is automatically set to the correct environment by comparing `home_url()` with the configured URLs (no manual "Environment" selection needed)
+- The manual Environment selector is retained as fallback for single-site setups without URL matching
+
+---
+
 ### 1.2.0 — 2026-03-06
 
 **Settings Overhaul**

@@ -181,22 +181,49 @@ class WPD_Branding {
         echo '</style>';
     }
 
+    /**
+     * Detect the active environment by comparing home_url() against the
+     * configured Live / Staging URLs. Falls back to the manually saved setting.
+     */
+    private function detect_environment(): string {
+        $options   = wpd_get_options();
+        $live_url  = trailingslashit(strtolower($options['admin_environment_live_url']  ?? ''));
+        $stage_url = trailingslashit(strtolower($options['admin_environment_stage_url'] ?? ''));
+        $current   = trailingslashit(strtolower(home_url()));
+
+        if ($live_url && $current === $live_url) {
+            return 'live';
+        }
+        if ($stage_url && $current === $stage_url) {
+            return 'stage';
+        }
+
+        return wpd_get_option('admin_environment', 'off');
+    }
+
     public function add_environment_indicator(\WP_Admin_Bar $wp_admin_bar): void {
-        $env = wpd_get_option('admin_environment', 'off');
+        $env = $this->detect_environment();
         if ($env === 'off') {
             return;
         }
 
         $options  = wpd_get_options();
         $is_live  = ($env === 'live');
-        $badge_label = $is_live ? __('Live', 'wpd') : __('Staging', 'wpd');
-        $badge_class = $is_live ? 'wpd-env-live' : 'wpd-env-stage';
 
+        $current_label = $is_live ? __('Live', 'wpd')    : __('Staging', 'wpd');
+        $other_label   = $is_live ? __('Staging', 'wpd') : __('Live', 'wpd');
+        $current_class = $is_live ? 'wpd-env-live'       : 'wpd-env-stage';
+        $other_class   = $is_live ? 'wpd-env-stage'      : 'wpd-env-live';
+        $switch_url    = $is_live
+            ? ($options['admin_environment_stage_url'] ?? '')
+            : ($options['admin_environment_live_url']  ?? '');
+
+        // Top-bar badge: "Umgebung: [Staging ▾]"
         $title = sprintf(
-            '%s: <span class="wpd-env-badge %s">%s</span>',
+            '%s: <span class="wpd-env-badge %s">%s <span class="wpd-env-arrow">&#9660;</span></span>',
             esc_html__('Umgebung', 'wpd'),
-            esc_attr($badge_class),
-            esc_html($badge_label)
+            esc_attr($current_class),
+            esc_html($current_label)
         );
 
         $wp_admin_bar->add_node([
@@ -207,27 +234,52 @@ class WPD_Branding {
             'meta'   => ['class' => 'wpd-env-indicator'],
         ]);
 
-        if ($is_live) {
-            $switch_url   = $options['admin_environment_stage_url'] ?? '';
-            $switch_label = __('Staging öffnen', 'wpd');
-        } else {
-            $switch_url   = $options['admin_environment_live_url'] ?? '';
-            $switch_label = __('Live öffnen', 'wpd');
-        }
+        // Dropdown header
+        $wp_admin_bar->add_node([
+            'id'     => 'wpd-env-header',
+            'parent' => 'wpd-environment',
+            'title'  => esc_html__('UMGEBUNG WECHSELN', 'wpd'),
+            'href'   => false,
+            'meta'   => ['class' => 'wpd-env-menu-header'],
+        ]);
 
-        if (!empty($switch_url)) {
-            $wp_admin_bar->add_node([
-                'id'     => 'wpd-environment-switch',
-                'parent' => 'wpd-environment',
-                'title'  => esc_html($switch_label),
-                'href'   => esc_url($switch_url),
-                'meta'   => ['target' => '_blank'],
-            ]);
-        }
+        // Current environment row (not clickable)
+        $wp_admin_bar->add_node([
+            'id'     => 'wpd-env-current',
+            'parent' => 'wpd-environment',
+            'title'  => sprintf(
+                '<span class="wpd-env-dot %s"></span><span class="wpd-env-name">%s</span><span class="wpd-env-status-label">%s</span>',
+                esc_attr($current_class),
+                esc_html($current_label),
+                esc_html__('aktuell', 'wpd')
+            ),
+            'href'   => false,
+            'meta'   => ['class' => 'wpd-env-row wpd-env-row--current'],
+        ]);
+
+        // Switch environment row (clickable if URL is set)
+        $wp_admin_bar->add_node([
+            'id'     => 'wpd-env-switch',
+            'parent' => 'wpd-environment',
+            'title'  => sprintf(
+                '<span class="wpd-env-dot %s"></span><span class="wpd-env-name">%s</span>%s',
+                esc_attr($other_class),
+                esc_html($other_label),
+                $switch_url
+                    ? '<span class="wpd-env-switch-label">&rarr; ' . esc_html__('wechseln', 'wpd') . '</span>'
+                    : '<span class="wpd-env-status-label">' . esc_html__('keine URL', 'wpd') . '</span>'
+            ),
+            'href'   => $switch_url ? esc_url($switch_url) : false,
+            'meta'   => array_filter([
+                'class'  => 'wpd-env-row wpd-env-row--switch',
+                'target' => $switch_url ? '_blank' : null,
+            ]),
+        ]);
     }
 
     public function inject_environment_styles(): void {
         echo '<style id="wpd-env-styles">
+            /* ── Top-bar trigger ─────────────────────────────── */
             #wpadminbar .wpd-env-indicator > .ab-item {
                 display: flex;
                 align-items: center;
@@ -236,20 +288,83 @@ class WPD_Branding {
                 padding: 0 8px;
                 color: #c3c4c7 !important;
                 font-size: 13px;
+                background: transparent !important;
             }
             .wpd-env-badge {
-                display: inline-block;
-                padding: 2px 8px;
-                border-radius: 3px;
-                font-size: 11px;
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                padding: 3px 9px;
+                border-radius: 4px;
+                font-size: 12px;
                 font-weight: 700;
                 color: #fff;
-                line-height: 18px;
-                letter-spacing: 0.03em;
+                letter-spacing: 0.02em;
+                line-height: 1.5;
             }
-            .wpd-env-badge.wpd-env-live { background: #00a32a; }
+            .wpd-env-arrow { font-size: 9px; opacity: 0.85; }
+            .wpd-env-badge.wpd-env-live  { background: #00a32a; }
             .wpd-env-badge.wpd-env-stage { background: #d63638; }
-            #wpadminbar .wpd-env-indicator .ab-submenu { min-width: 140px; }
+
+            /* ── Dropdown panel ──────────────────────────────── */
+            #wpadminbar .wpd-env-indicator .ab-sub-wrapper {
+                min-width: 230px;
+            }
+            #wpadminbar .wpd-env-indicator .ab-submenu {
+                min-width: 230px;
+                background: #2c3338 !important;
+                padding: 0 !important;
+                border-radius: 0 0 4px 4px;
+                box-shadow: 0 4px 12px rgba(0,0,0,.35);
+            }
+
+            /* ── Section header ──────────────────────────────── */
+            #wpadminbar #wp-admin-bar-wpd-env-header > .ab-item {
+                color: #8c8f94 !important;
+                font-size: 10px !important;
+                font-weight: 700 !important;
+                letter-spacing: 0.1em !important;
+                text-transform: uppercase;
+                padding: 12px 14px 8px !important;
+                cursor: default;
+                pointer-events: none;
+                background: transparent !important;
+            }
+
+            /* ── Env rows ────────────────────────────────────── */
+            #wpadminbar .wpd-env-row > .ab-item {
+                display: flex !important;
+                align-items: center;
+                gap: 10px;
+                padding: 9px 14px !important;
+                color: #c3c4c7 !important;
+                font-size: 13px !important;
+                background: transparent !important;
+                transition: background 0.1s;
+            }
+            #wpadminbar .wpd-env-row--current > .ab-item {
+                cursor: default;
+                pointer-events: none;
+            }
+            #wpadminbar .wpd-env-row--switch > .ab-item:hover {
+                background: #3c434a !important;
+            }
+
+            /* ── Dots ────────────────────────────────────────── */
+            .wpd-env-dot {
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                flex-shrink: 0;
+            }
+            .wpd-env-dot.wpd-env-live  { background: #00a32a; }
+            .wpd-env-dot.wpd-env-stage { background: #d63638; }
+
+            /* ── Row labels ──────────────────────────────────── */
+            .wpd-env-name         { flex: 1; }
+            .wpd-env-status-label { color: #8c8f94; font-size: 12px; }
+            .wpd-env-switch-label { color: #00a32a; font-size: 12px; font-weight: 600; }
         </style>';
     }
 }
