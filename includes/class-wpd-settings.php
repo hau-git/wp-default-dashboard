@@ -82,6 +82,9 @@ class WPD_Settings {
                 'admin_color_scheme',
                 'admin_primary_color',
                 'admin_accent_color',
+                'admin_bar_bg_color',
+                'admin_bar_text_color',
+                'admin_menu_text_color',
             ],
             'security' => [
                 'enable_hardening',
@@ -132,7 +135,7 @@ class WPD_Settings {
         ?>
         <div class="wrap">
             <h1><?php esc_html_e('WP Default', 'wpd'); ?></h1>
-            <p class="description"><?php esc_html_e('Customize your WordPress admin area, clean up the dashboard, and apply security hardening.', 'wpd'); ?></p>
+            <p class="description"><?php esc_html_e('WordPress-Adminbereich anpassen, Dashboard aufräumen und Sicherheitshärtung anwenden.', 'wpd'); ?></p>
             <nav class="nav-tab-wrapper">
                 <?php foreach ($tabs as $slug => $label) : ?>
                     <a href="<?php echo esc_url(add_query_arg(['page' => $this->page_slug, 'tab' => $slug], admin_url('options-general.php'))); ?>"
@@ -371,544 +374,633 @@ class WPD_Settings {
     }
 
     protected function render_appearance_tab(array $options): void {
+        $k = WPD_OPTION_KEY;
         ?>
-        <h2><?php esc_html_e('Login Branding', 'wpd'); ?></h2>
-        <p class="description"><?php esc_html_e('Customize the appearance of the WordPress login page with your own logo, colors, and background image.', 'wpd'); ?></p>
-        <table class="form-table" role="presentation">
-            <tr>
-                <th scope="row"><?php esc_html_e('Enable Login Branding', 'wpd'); ?></th>
-                <td>
-                    <label>
-                        <input type="checkbox" name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[enable_login_branding]"
-                               value="1" <?php checked(!empty($options['enable_login_branding'])); ?>>
-                        <?php esc_html_e('Customize the WordPress login screen.', 'wpd'); ?>
-                    </label>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Logo', 'wpd'); ?></th>
-                <td>
-                    <input type="text" class="regular-text wpd-media-url" id="wpd_login_logo_url"
-                           name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[login_logo_url]"
-                           value="<?php echo esc_url($options['login_logo_url'] ?? ''); ?>">
-                    <button type="button" class="button wpd-media-upload" data-target="#wpd_login_logo_url">
-                        <?php esc_html_e('Select Image', 'wpd'); ?>
-                    </button>
-                    <?php if (!empty($options['login_logo_url'])) : ?>
-                        <p><img src="<?php echo esc_url($options['login_logo_url']); ?>" style="max-width:200px;height:auto;margin-top:8px;"></p>
-                    <?php endif; ?>
-                    <p class="description"><?php esc_html_e('Replaces the WordPress logo on the login page. Recommended size: 320×80 pixels.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Logo Link URL', 'wpd'); ?></th>
-                <td>
-                    <input type="url" class="regular-text"
-                           name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[login_logo_link]"
-                           value="<?php echo esc_url($options['login_logo_link'] ?? ''); ?>">
-                    <p class="description"><?php esc_html_e('The URL the logo links to. Defaults to wordpress.org if left empty.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Logo Title', 'wpd'); ?></th>
-                <td>
-                    <input type="text" class="regular-text"
-                           name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[login_logo_title]"
-                           value="<?php echo esc_attr($options['login_logo_title'] ?? ''); ?>">
-                    <p class="description"><?php esc_html_e('The tooltip text when hovering over the logo. Defaults to "Powered by WordPress" if left empty.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Background Color', 'wpd'); ?></th>
-                <td>
-                    <input type="text" class="regular-text"
-                           name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[login_bg_color]"
-                           value="<?php echo esc_attr($options['login_bg_color'] ?? ''); ?>"
-                           placeholder="#ffffff">
-                    <p class="description"><?php esc_html_e('Hex color code for the login page background. Example: #f0f0f1', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Background Image', 'wpd'); ?></th>
-                <td>
-                    <input type="text" class="regular-text wpd-media-url" id="wpd_login_bg_image"
-                           name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[login_bg_image]"
-                           value="<?php echo esc_url($options['login_bg_image'] ?? ''); ?>">
-                    <button type="button" class="button wpd-media-upload" data-target="#wpd_login_bg_image">
-                        <?php esc_html_e('Select Image', 'wpd'); ?>
-                    </button>
-                    <p class="description"><?php esc_html_e('A full-screen background image for the login page. Will cover the entire viewport.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Button Color', 'wpd'); ?></th>
-                <td>
-                    <input type="text" class="regular-text"
-                           name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[login_button_color]"
-                           value="<?php echo esc_attr($options['login_button_color'] ?? ''); ?>"
-                           placeholder="#2271b1">
-                    <p class="description"><?php esc_html_e('Background color for the login button. Example: #2271b1', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Link Color', 'wpd'); ?></th>
-                <td>
-                    <input type="text" class="regular-text"
-                           name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[login_link_color]"
-                           value="<?php echo esc_attr($options['login_link_color'] ?? ''); ?>"
-                           placeholder="#2271b1">
-                    <p class="description"><?php esc_html_e('Color for links on the login page ("Back to site", "Lost your password?"). Example: #2271b1', 'wpd'); ?></p>
-                </td>
-            </tr>
-        </table>
+
+        <?php /* ── Login-Branding ──────────────────────────────────── */ ?>
+        <div class="wpd-section <?php echo !empty($options['enable_login_branding']) ? 'is-active' : ''; ?>">
+            <div class="wpd-section__head">
+                <label class="wpd-section__master">
+                    <span class="wpd-toggle">
+                        <input type="checkbox"
+                               id="wpd_toggle_login_branding"
+                               name="<?php echo esc_attr($k); ?>[enable_login_branding]"
+                               value="1"
+                               <?php checked(!empty($options['enable_login_branding'])); ?>>
+                        <span class="wpd-toggle__track"></span>
+                    </span>
+                    <span class="wpd-section__title"><?php esc_html_e('Login-Branding', 'wpd'); ?></span>
+                </label>
+                <span class="wpd-section__badge"><?php echo !empty($options['enable_login_branding']) ? esc_html__('aktiv', 'wpd') : esc_html__('inaktiv', 'wpd'); ?></span>
+            </div>
+            <p class="description"><?php esc_html_e('Passe das Erscheinungsbild der WordPress-Anmeldeseite mit eigenem Logo, Farben und Hintergrundbild an.', 'wpd'); ?></p>
+
+            <div class="wpd-section__body" data-controlled-by="wpd_toggle_login_branding">
+                <table class="form-table" role="presentation">
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Logo', 'wpd'); ?></th>
+                        <td>
+                            <input type="text" class="regular-text wpd-media-url" id="wpd_login_logo_url"
+                                   name="<?php echo esc_attr($k); ?>[login_logo_url]"
+                                   value="<?php echo esc_url($options['login_logo_url'] ?? ''); ?>">
+                            <button type="button" class="button wpd-media-upload" data-target="#wpd_login_logo_url">
+                                <?php esc_html_e('Bild auswählen', 'wpd'); ?>
+                            </button>
+                            <?php if (!empty($options['login_logo_url'])) : ?>
+                                <p><img src="<?php echo esc_url($options['login_logo_url']); ?>" style="max-width:200px;height:auto;margin-top:8px;"></p>
+                            <?php endif; ?>
+                            <p class="description"><?php esc_html_e('Ersetzt das WordPress-Logo auf der Anmeldeseite. Empfohlene Größe: 320×80 Pixel.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Logo-Link-URL', 'wpd'); ?></th>
+                        <td>
+                            <input type="url" class="regular-text"
+                                   name="<?php echo esc_attr($k); ?>[login_logo_link]"
+                                   value="<?php echo esc_url($options['login_logo_link'] ?? ''); ?>">
+                            <p class="description"><?php esc_html_e('URL, auf die das Logo verlinkt. Standard ist die Startseite der Website.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Logo-Titel', 'wpd'); ?></th>
+                        <td>
+                            <input type="text" class="regular-text"
+                                   name="<?php echo esc_attr($k); ?>[login_logo_title]"
+                                   value="<?php echo esc_attr($options['login_logo_title'] ?? ''); ?>">
+                            <p class="description"><?php esc_html_e('Tooltip-Text beim Hovern über das Logo. Standard: "Powered by WordPress".', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Hintergrundfarbe', 'wpd'); ?></th>
+                        <td>
+                            <input type="text" class="wpd-color-picker"
+                                   name="<?php echo esc_attr($k); ?>[login_bg_color]"
+                                   value="<?php echo esc_attr($options['login_bg_color'] ?? ''); ?>"
+                                   data-default-color="">
+                            <p class="description"><?php esc_html_e('Hintergrundfarbe der Anmeldeseite.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Hintergrundbild', 'wpd'); ?></th>
+                        <td>
+                            <input type="text" class="regular-text wpd-media-url" id="wpd_login_bg_image"
+                                   name="<?php echo esc_attr($k); ?>[login_bg_image]"
+                                   value="<?php echo esc_url($options['login_bg_image'] ?? ''); ?>">
+                            <button type="button" class="button wpd-media-upload" data-target="#wpd_login_bg_image">
+                                <?php esc_html_e('Bild auswählen', 'wpd'); ?>
+                            </button>
+                            <p class="description"><?php esc_html_e('Vollbild-Hintergrundbild für die Anmeldeseite.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Button-Farbe', 'wpd'); ?></th>
+                        <td>
+                            <input type="text" class="wpd-color-picker"
+                                   name="<?php echo esc_attr($k); ?>[login_button_color]"
+                                   value="<?php echo esc_attr($options['login_button_color'] ?? ''); ?>"
+                                   data-default-color="">
+                            <p class="description"><?php esc_html_e('Hintergrundfarbe des Anmelde-Buttons.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Link-Farbe', 'wpd'); ?></th>
+                        <td>
+                            <input type="text" class="wpd-color-picker"
+                                   name="<?php echo esc_attr($k); ?>[login_link_color]"
+                                   value="<?php echo esc_attr($options['login_link_color'] ?? ''); ?>"
+                                   data-default-color="">
+                            <p class="description"><?php esc_html_e('Farbe für Links auf der Anmeldeseite ("Zurück zur Website", "Passwort vergessen?").', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
 
         <hr>
-        <h2><?php esc_html_e('Admin Branding', 'wpd'); ?></h2>
-        <p class="description"><?php esc_html_e('Customize the WordPress admin area with your own footer text and a custom link in the admin bar.', 'wpd'); ?></p>
-        <table class="form-table" role="presentation">
-            <tr>
-                <th scope="row"><?php esc_html_e('Enable Admin Branding', 'wpd'); ?></th>
-                <td>
-                    <label>
-                        <input type="checkbox" name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[enable_admin_branding]"
-                               value="1" <?php checked(!empty($options['enable_admin_branding'])); ?>>
-                        <?php esc_html_e('Customize admin footer and admin bar.', 'wpd'); ?>
-                    </label>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Footer Text', 'wpd'); ?></th>
-                <td>
-                    <textarea class="large-text" rows="3"
-                              name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[admin_footer_text]"><?php echo esc_textarea($options['admin_footer_text'] ?? ''); ?></textarea>
-                    <p class="description"><?php esc_html_e('Replaces the default "Thank you for creating with WordPress" text in the admin footer. HTML is allowed (links, bold, etc.).', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Admin Bar Link Label', 'wpd'); ?></th>
-                <td>
-                    <input type="text" class="regular-text"
-                           name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[admin_bar_link_label]"
-                           value="<?php echo esc_attr($options['admin_bar_link_label'] ?? ''); ?>">
-                    <p class="description"><?php esc_html_e('Adds a custom link to the WordPress admin bar. Enter the visible text here.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Admin Bar Link URL', 'wpd'); ?></th>
-                <td>
-                    <input type="url" class="regular-text"
-                           name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[admin_bar_link_url]"
-                           value="<?php echo esc_url($options['admin_bar_link_url'] ?? ''); ?>">
-                    <p class="description"><?php esc_html_e('The URL for the admin bar link. Both internal and external URLs are supported.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Greeting', 'wpd'); ?></th>
-                <td>
-                    <input type="text" class="regular-text"
-                           name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[admin_bar_greeting]"
-                           value="<?php echo esc_attr($options['admin_bar_greeting'] ?? ''); ?>"
-                           placeholder="<?php esc_attr_e('Moin, %s', 'wpd'); ?>">
-                    <p class="description"><?php esc_html_e('Replaces the default "Howdy, %s" greeting in the admin bar. Use %s as placeholder for the display name. Leave empty for the WordPress default.', 'wpd'); ?></p>
-                </td>
-            </tr>
-        </table>
+
+        <?php /* ── Admin-Branding ──────────────────────────────────── */ ?>
+        <div class="wpd-section <?php echo !empty($options['enable_admin_branding']) ? 'is-active' : ''; ?>">
+            <div class="wpd-section__head">
+                <label class="wpd-section__master">
+                    <span class="wpd-toggle">
+                        <input type="checkbox"
+                               id="wpd_toggle_admin_branding"
+                               name="<?php echo esc_attr($k); ?>[enable_admin_branding]"
+                               value="1"
+                               <?php checked(!empty($options['enable_admin_branding'])); ?>>
+                        <span class="wpd-toggle__track"></span>
+                    </span>
+                    <span class="wpd-section__title"><?php esc_html_e('Admin-Branding', 'wpd'); ?></span>
+                </label>
+                <span class="wpd-section__badge"><?php echo !empty($options['enable_admin_branding']) ? esc_html__('aktiv', 'wpd') : esc_html__('inaktiv', 'wpd'); ?></span>
+            </div>
+            <p class="description"><?php esc_html_e('Passe den WordPress-Adminbereich mit eigenem Footer-Text, Admin-Bar-Link und Begrüßungstext an.', 'wpd'); ?></p>
+
+            <div class="wpd-section__body" data-controlled-by="wpd_toggle_admin_branding">
+                <table class="form-table" role="presentation">
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Footer-Text', 'wpd'); ?></th>
+                        <td>
+                            <textarea class="large-text" rows="3"
+                                      name="<?php echo esc_attr($k); ?>[admin_footer_text]"><?php echo esc_textarea($options['admin_footer_text'] ?? ''); ?></textarea>
+                            <p class="description"><?php esc_html_e('Ersetzt den Standard-Footer-Text im WordPress-Admin. HTML erlaubt (Links, Fettschrift etc.).', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Admin-Bar-Link', 'wpd'); ?></th>
+                        <td>
+                            <input type="text" class="regular-text"
+                                   name="<?php echo esc_attr($k); ?>[admin_bar_link_label]"
+                                   value="<?php echo esc_attr($options['admin_bar_link_label'] ?? ''); ?>"
+                                   placeholder="<?php esc_attr_e('Beschriftung', 'wpd'); ?>">
+                            <input type="url" class="regular-text"
+                                   name="<?php echo esc_attr($k); ?>[admin_bar_link_url]"
+                                   value="<?php echo esc_url($options['admin_bar_link_url'] ?? ''); ?>"
+                                   placeholder="https://"
+                                   style="margin-top:6px;">
+                            <p class="description"><?php esc_html_e('Fügt einen benutzerdefinierten Link in die Admin-Bar ein — Beschriftung und URL.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Begrüßung', 'wpd'); ?></th>
+                        <td>
+                            <input type="text" class="regular-text"
+                                   name="<?php echo esc_attr($k); ?>[admin_bar_greeting]"
+                                   value="<?php echo esc_attr($options['admin_bar_greeting'] ?? ''); ?>"
+                                   placeholder="<?php esc_attr_e('Willkommen,', 'wpd'); ?>">
+                            <p class="description"><?php esc_html_e('Benutzerdefinierter Begrüßungstext in der Admin-Bar vor dem Nutzernamen. Leer lassen für den WordPress-Standard.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
 
         <hr>
-        <h2><?php esc_html_e('Environment Indicator', 'wpd'); ?></h2>
-        <p class="description"><?php esc_html_e('Display a colored badge in the admin bar to identify the current environment. Helps prevent accidental changes on live sites.', 'wpd'); ?></p>
-        <table class="form-table" role="presentation">
-            <tr>
-                <th scope="row"><?php esc_html_e('Environment', 'wpd'); ?></th>
-                <td>
-                    <select name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[admin_environment]">
-                        <option value="off" <?php selected($options['admin_environment'] ?? 'off', 'off'); ?>><?php esc_html_e('Disabled', 'wpd'); ?></option>
-                        <option value="stage" <?php selected($options['admin_environment'] ?? 'off', 'stage'); ?>><?php esc_html_e('Staging', 'wpd'); ?></option>
-                        <option value="live" <?php selected($options['admin_environment'] ?? 'off', 'live'); ?>><?php esc_html_e('Live', 'wpd'); ?></option>
-                    </select>
-                    <p class="description">
-                        <?php esc_html_e('Fallback — used only when the current URL does not match either configured URL below.', 'wpd'); ?>
-                        <?php esc_html_e('The badge is visible to all logged-in users in the admin bar — both in the backend and on the frontend.', 'wpd'); ?>
-                    </p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Live URL', 'wpd'); ?></th>
-                <td>
-                    <input type="url" class="regular-text"
-                           name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[admin_environment_live_url]"
-                           value="<?php echo esc_url($options['admin_environment_live_url'] ?? ''); ?>"
-                           placeholder="https://example.com">
-                    <p class="description">
-                        <?php esc_html_e('URL of the live site. When the plugin is installed on both sites, the badge is auto-detected by comparing this URL with the current site URL — no manual "Environment" selection needed.', 'wpd'); ?>
-                    </p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Staging URL', 'wpd'); ?></th>
-                <td>
-                    <input type="url" class="regular-text"
-                           name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[admin_environment_stage_url]"
-                           value="<?php echo esc_url($options['admin_environment_stage_url'] ?? ''); ?>"
-                           placeholder="https://staging.example.com">
-                    <p class="description">
-                        <?php esc_html_e('URL of the staging site. The dropdown always shows a one-click link to switch to the other environment.', 'wpd'); ?>
-                    </p>
-                </td>
-            </tr>
-        </table>
+
+        <?php /* ── Umgebungsindikator ──────────────────────────────── */ ?>
+        <div class="wpd-section is-active">
+            <div class="wpd-section__head">
+                <span class="wpd-section__title"><?php esc_html_e('Umgebungsindikator', 'wpd'); ?></span>
+            </div>
+            <p class="description"><?php esc_html_e('Zeigt ein farbiges Badge in der Admin-Bar zur Identifizierung der aktuellen Umgebung (Live/Staging) — verhindert versehentliche Änderungen auf der Live-Seite.', 'wpd'); ?></p>
+
+            <div class="wpd-section__body">
+                <table class="form-table" role="presentation">
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Umgebung', 'wpd'); ?></th>
+                        <td>
+                            <select name="<?php echo esc_attr($k); ?>[admin_environment]">
+                                <option value="off" <?php selected($options['admin_environment'] ?? 'off', 'off'); ?>><?php esc_html_e('Deaktiviert', 'wpd'); ?></option>
+                                <option value="stage" <?php selected($options['admin_environment'] ?? 'off', 'stage'); ?>><?php esc_html_e('Staging', 'wpd'); ?></option>
+                                <option value="live" <?php selected($options['admin_environment'] ?? 'off', 'live'); ?>><?php esc_html_e('Live', 'wpd'); ?></option>
+                            </select>
+                            <p class="description"><?php esc_html_e('Fallback-Einstellung — wird nur verwendet, wenn die aktuelle URL keiner der konfigurierten URLs entspricht. Das Badge ist für alle eingeloggten Nutzer sichtbar, auch im Frontend.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Live-URL', 'wpd'); ?></th>
+                        <td>
+                            <input type="url" class="regular-text"
+                                   name="<?php echo esc_attr($k); ?>[admin_environment_live_url]"
+                                   value="<?php echo esc_url($options['admin_environment_live_url'] ?? ''); ?>"
+                                   placeholder="https://example.com">
+                            <p class="description"><?php esc_html_e('URL der Live-Website. Das Badge wird automatisch erkannt, wenn das Plugin auf beiden Umgebungen installiert ist — ohne manuelle Auswahl.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Staging-URL', 'wpd'); ?></th>
+                        <td>
+                            <input type="url" class="regular-text"
+                                   name="<?php echo esc_attr($k); ?>[admin_environment_stage_url]"
+                                   value="<?php echo esc_url($options['admin_environment_stage_url'] ?? ''); ?>"
+                                   placeholder="https://staging.example.com">
+                            <p class="description"><?php esc_html_e('URL der Staging-Website. Das Dropdown zeigt immer einen Klick-Link zum Wechseln der Umgebung.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
 
         <hr>
-        <h2><?php esc_html_e('Admin Colors', 'wpd'); ?></h2>
-        <p class="description"><?php esc_html_e('Set a global admin color scheme or define custom brand colors for the WordPress backend.', 'wpd'); ?></p>
-        <table class="form-table" role="presentation">
-            <tr>
-                <th scope="row"><?php esc_html_e('Color Scheme', 'wpd'); ?></th>
-                <td>
-                    <select name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[admin_color_scheme]">
-                        <option value="" <?php selected($options['admin_color_scheme'] ?? '', ''); ?>><?php esc_html_e('— User preference (no override) —', 'wpd'); ?></option>
-                        <option value="fresh" <?php selected($options['admin_color_scheme'] ?? '', 'fresh'); ?>><?php esc_html_e('Default (Fresh)', 'wpd'); ?></option>
-                        <option value="light" <?php selected($options['admin_color_scheme'] ?? '', 'light'); ?>><?php esc_html_e('Light', 'wpd'); ?></option>
-                        <option value="blue" <?php selected($options['admin_color_scheme'] ?? '', 'blue'); ?>><?php esc_html_e('Blue', 'wpd'); ?></option>
-                        <option value="coffee" <?php selected($options['admin_color_scheme'] ?? '', 'coffee'); ?>><?php esc_html_e('Coffee', 'wpd'); ?></option>
-                        <option value="ectoplasm" <?php selected($options['admin_color_scheme'] ?? '', 'ectoplasm'); ?>><?php esc_html_e('Ectoplasm', 'wpd'); ?></option>
-                        <option value="midnight" <?php selected($options['admin_color_scheme'] ?? '', 'midnight'); ?>><?php esc_html_e('Midnight', 'wpd'); ?></option>
-                        <option value="ocean" <?php selected($options['admin_color_scheme'] ?? '', 'ocean'); ?>><?php esc_html_e('Ocean', 'wpd'); ?></option>
-                        <option value="sunrise" <?php selected($options['admin_color_scheme'] ?? '', 'sunrise'); ?>><?php esc_html_e('Sunrise', 'wpd'); ?></option>
-                    </select>
-                    <p class="description"><?php esc_html_e('Forces a specific color scheme for all users, overriding their individual profile setting.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Custom Primary Color', 'wpd'); ?></th>
-                <td>
-                    <input type="text" class="regular-text"
-                           name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[admin_primary_color]"
-                           value="<?php echo esc_attr($options['admin_primary_color'] ?? ''); ?>"
-                           placeholder="#1d2327">
-                    <p class="description"><?php esc_html_e('Sets the admin menu background and CSS variable --wp-admin-theme-color. Example: #1a3a5c', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Custom Accent Color', 'wpd'); ?></th>
-                <td>
-                    <input type="text" class="regular-text"
-                           name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[admin_accent_color]"
-                           value="<?php echo esc_attr($options['admin_accent_color'] ?? ''); ?>"
-                           placeholder="#2271b1">
-                    <p class="description"><?php esc_html_e('Color for primary action buttons. Example: #e05c00', 'wpd'); ?></p>
-                </td>
-            </tr>
-        </table>
+
+        <?php /* ── Admin-Farben ──────────────────────────────────── */ ?>
+        <div class="wpd-section is-active">
+            <div class="wpd-section__head">
+                <span class="wpd-section__title"><?php esc_html_e('Admin-Farben', 'wpd'); ?></span>
+            </div>
+            <p class="description"><?php esc_html_e('Globales Admin-Farbschema oder eigene Markenfarben für das WordPress-Backend. Alle Farb-Felder zeigen eine direkte Live-Vorschau.', 'wpd'); ?></p>
+
+            <div class="wpd-section__body">
+                <table class="form-table" role="presentation">
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Farbschema', 'wpd'); ?></th>
+                        <td>
+                            <select name="<?php echo esc_attr($k); ?>[admin_color_scheme]">
+                                <option value="" <?php selected($options['admin_color_scheme'] ?? '', ''); ?>><?php esc_html_e('— Benutzerpräferenz (keine Überschreibung) —', 'wpd'); ?></option>
+                                <option value="fresh" <?php selected($options['admin_color_scheme'] ?? '', 'fresh'); ?>><?php esc_html_e('Standard (Fresh)', 'wpd'); ?></option>
+                                <option value="light" <?php selected($options['admin_color_scheme'] ?? '', 'light'); ?>><?php esc_html_e('Hell (Light)', 'wpd'); ?></option>
+                                <option value="blue" <?php selected($options['admin_color_scheme'] ?? '', 'blue'); ?>><?php esc_html_e('Blau (Blue)', 'wpd'); ?></option>
+                                <option value="coffee" <?php selected($options['admin_color_scheme'] ?? '', 'coffee'); ?>><?php esc_html_e('Kaffee (Coffee)', 'wpd'); ?></option>
+                                <option value="ectoplasm" <?php selected($options['admin_color_scheme'] ?? '', 'ectoplasm'); ?>><?php esc_html_e('Ektoplasma (Ectoplasm)', 'wpd'); ?></option>
+                                <option value="midnight" <?php selected($options['admin_color_scheme'] ?? '', 'midnight'); ?>><?php esc_html_e('Mitternacht (Midnight)', 'wpd'); ?></option>
+                                <option value="ocean" <?php selected($options['admin_color_scheme'] ?? '', 'ocean'); ?>><?php esc_html_e('Ozean (Ocean)', 'wpd'); ?></option>
+                                <option value="sunrise" <?php selected($options['admin_color_scheme'] ?? '', 'sunrise'); ?>><?php esc_html_e('Sonnenaufgang (Sunrise)', 'wpd'); ?></option>
+                            </select>
+                            <p class="description"><?php esc_html_e('Erzwingt ein bestimmtes Farbschema für alle Benutzer, unabhängig von deren individuellen Profileinstellungen.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Sidebar-Hintergrund', 'wpd'); ?></th>
+                        <td>
+                            <input type="text" class="wpd-color-picker"
+                                   name="<?php echo esc_attr($k); ?>[admin_primary_color]"
+                                   value="<?php echo esc_attr($options['admin_primary_color'] ?? ''); ?>"
+                                   data-preview="primary"
+                                   data-default-color="">
+                            <p class="description"><?php esc_html_e('Hintergrundfarbe des Admin-Menüs (Sidebar). Überschreibt das gewählte Farbschema.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Akzentfarbe (Buttons)', 'wpd'); ?></th>
+                        <td>
+                            <input type="text" class="wpd-color-picker"
+                                   name="<?php echo esc_attr($k); ?>[admin_accent_color]"
+                                   value="<?php echo esc_attr($options['admin_accent_color'] ?? ''); ?>"
+                                   data-preview="accent"
+                                   data-default-color="">
+                            <p class="description"><?php esc_html_e('Farbe für primäre Aktions-Buttons (z. B. "Speichern"). Überschreibt das gewählte Farbschema.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Admin-Bar Hintergrund', 'wpd'); ?></th>
+                        <td>
+                            <input type="text" class="wpd-color-picker"
+                                   name="<?php echo esc_attr($k); ?>[admin_bar_bg_color]"
+                                   value="<?php echo esc_attr($options['admin_bar_bg_color'] ?? ''); ?>"
+                                   data-preview="bar_bg"
+                                   data-default-color="">
+                            <p class="description"><?php esc_html_e('Hintergrundfarbe der Admin-Bar (schwarze Leiste oben). Gilt auch im Frontend für eingeloggte Nutzer.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Admin-Bar Text', 'wpd'); ?></th>
+                        <td>
+                            <input type="text" class="wpd-color-picker"
+                                   name="<?php echo esc_attr($k); ?>[admin_bar_text_color]"
+                                   value="<?php echo esc_attr($options['admin_bar_text_color'] ?? ''); ?>"
+                                   data-preview="bar_text"
+                                   data-default-color="">
+                            <p class="description"><?php esc_html_e('Textfarbe der Admin-Bar-Links und -Elemente.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Menü-Textfarbe', 'wpd'); ?></th>
+                        <td>
+                            <input type="text" class="wpd-color-picker"
+                                   name="<?php echo esc_attr($k); ?>[admin_menu_text_color]"
+                                   value="<?php echo esc_attr($options['admin_menu_text_color'] ?? ''); ?>"
+                                   data-preview="menu_text"
+                                   data-default-color="">
+                            <p class="description"><?php esc_html_e('Textfarbe der Menüeinträge in der Sidebar.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
         <?php
     }
 
     protected function render_security_tab(array $options): void {
+        $k = WPD_OPTION_KEY;
         ?>
-        <h2><?php esc_html_e('Security Hardening', 'wpd'); ?></h2>
-        <p class="description"><?php esc_html_e('Apply lightweight security measures to reduce your site\'s attack surface. These settings remove unnecessary information and disable features commonly exploited by attackers.', 'wpd'); ?></p>
-        <table class="form-table" role="presentation">
-            <tr>
-                <th scope="row"><?php esc_html_e('Enable Hardening', 'wpd'); ?></th>
-                <td>
-                    <label>
-                        <input type="checkbox" name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[enable_hardening]"
-                               value="1" <?php checked(!empty($options['enable_hardening'])); ?>>
-                        <?php esc_html_e('Enable security hardening features.', 'wpd'); ?>
-                    </label>
-                    <p class="description"><?php esc_html_e('Master switch for all hardening options below. Individual features can still be toggled.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Disable XML-RPC', 'wpd'); ?></th>
-                <td>
-                    <label>
-                        <input type="checkbox" name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[hardening_disable_xmlrpc]"
-                               value="1" <?php checked(!empty($options['hardening_disable_xmlrpc'])); ?>>
-                        <?php esc_html_e('Completely disable the XML-RPC interface.', 'wpd'); ?>
-                    </label>
-                    <p class="description"><?php esc_html_e('XML-RPC is a legacy API that is frequently targeted in brute-force attacks. Disable it unless you use the WordPress mobile app, Jetpack, or other services that require it.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Author Enumeration', 'wpd'); ?></th>
-                <td>
-                    <select name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[hardening_author_enum]">
-                        <option value="off" <?php selected($options['hardening_author_enum'] ?? 'off', 'off'); ?>>
-                            <?php esc_html_e('Off (no protection)', 'wpd'); ?>
-                        </option>
-                        <option value="404" <?php selected($options['hardening_author_enum'] ?? 'off', '404'); ?>>
-                            <?php esc_html_e('Return 404', 'wpd'); ?>
-                        </option>
-                        <option value="redirect" <?php selected($options['hardening_author_enum'] ?? 'off', 'redirect'); ?>>
-                            <?php esc_html_e('Redirect to homepage', 'wpd'); ?>
-                        </option>
-                    </select>
-                    <p class="description"><?php esc_html_e('Prevents attackers from discovering usernames via ?author=1 URLs. "Return 404" shows a not-found page, "Redirect" sends visitors to the homepage.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Remove RSD Link', 'wpd'); ?></th>
-                <td>
-                    <label>
-                        <input type="checkbox" name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[hardening_remove_rsd]"
-                               value="1" <?php checked(!empty($options['hardening_remove_rsd'])); ?>>
-                        <?php esc_html_e('Remove the RSD (Really Simple Discovery) link from the header.', 'wpd'); ?>
-                    </label>
-                    <p class="description"><?php esc_html_e('RSD is only needed for remote publishing clients. Removing it reduces information leakage.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Remove WLW Manifest', 'wpd'); ?></th>
-                <td>
-                    <label>
-                        <input type="checkbox" name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[hardening_remove_wlw]"
-                               value="1" <?php checked(!empty($options['hardening_remove_wlw'])); ?>>
-                        <?php esc_html_e('Remove the Windows Live Writer manifest link.', 'wpd'); ?>
-                    </label>
-                    <p class="description"><?php esc_html_e('Windows Live Writer is discontinued software. This link is not needed and can be safely removed.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Remove Generator Meta', 'wpd'); ?></th>
-                <td>
-                    <label>
-                        <input type="checkbox" name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[hardening_remove_generator]"
-                               value="1" <?php checked(!empty($options['hardening_remove_generator'])); ?>>
-                        <?php esc_html_e('Remove the WordPress version meta tag.', 'wpd'); ?>
-                    </label>
-                    <p class="description"><?php esc_html_e('Hides the WordPress version number from your site\'s HTML source. Prevents attackers from targeting version-specific vulnerabilities.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Hide Theme/Plugin Editor', 'wpd'); ?></th>
-                <td>
-                    <label>
-                        <input type="checkbox" name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[hardening_hide_editor]"
-                               value="1" <?php checked(!empty($options['hardening_hide_editor'])); ?>>
-                        <?php esc_html_e('Hide the built-in theme and plugin editor menus.', 'wpd'); ?>
-                    </label>
-                    <p class="description">
-                        <?php esc_html_e('Removes the editor menu entries from the admin. For full protection, also add DISALLOW_FILE_EDIT to wp-config.php.', 'wpd'); ?>
-                    </p>
-                </td>
-            </tr>
-        </table>
 
-        <hr>
-        <h2><?php esc_html_e('Advanced Hardening', 'wpd'); ?></h2>
-        <p class="description"><?php esc_html_e('Additional measures to reduce information leakage and attack surface.', 'wpd'); ?></p>
-        <table class="form-table" role="presentation">
-            <tr>
-                <th scope="row"><?php esc_html_e('Disable REST API User Endpoint', 'wpd'); ?></th>
-                <td>
-                    <label>
-                        <input type="checkbox" name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[hardening_disable_rest_users]"
-                               value="1" <?php checked(!empty($options['hardening_disable_rest_users'])); ?>>
-                        <?php esc_html_e('Block the /wp/v2/users endpoint for unauthenticated requests.', 'wpd'); ?>
-                    </label>
-                    <p class="description"><?php esc_html_e('Prevents username enumeration via the REST API. Authenticated requests are not affected.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Send Security Headers', 'wpd'); ?></th>
-                <td>
-                    <label>
-                        <input type="checkbox" name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[hardening_security_headers]"
-                               value="1" <?php checked(!empty($options['hardening_security_headers'])); ?>>
-                        <?php esc_html_e('Add X-Frame-Options, X-Content-Type-Options, Referrer-Policy, and Permissions-Policy headers.', 'wpd'); ?>
-                    </label>
-                    <p class="description"><?php esc_html_e('Adds standard HTTP security headers to all responses. Protects against clickjacking, MIME-sniffing, and information leakage.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Remove Version from Assets', 'wpd'); ?></th>
-                <td>
-                    <label>
-                        <input type="checkbox" name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[hardening_remove_version_assets]"
-                               value="1" <?php checked(!empty($options['hardening_remove_version_assets'])); ?>>
-                        <?php esc_html_e('Strip ?ver=x.x from enqueued script and style URLs.', 'wpd'); ?>
-                    </label>
-                    <p class="description"><?php esc_html_e('Hides WordPress and plugin version numbers from asset URLs, supplementing the generator meta removal.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Disable Application Passwords', 'wpd'); ?></th>
-                <td>
-                    <label>
-                        <input type="checkbox" name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[hardening_disable_app_passwords]"
-                               value="1" <?php checked(!empty($options['hardening_disable_app_passwords'])); ?>>
-                        <?php esc_html_e('Disable the Application Passwords feature entirely.', 'wpd'); ?>
-                    </label>
-                    <p class="description"><?php esc_html_e('Removes REST API authentication via app passwords. Disable if you do not use external app integrations.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Disable Pingbacks', 'wpd'); ?></th>
-                <td>
-                    <label>
-                        <input type="checkbox" name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[hardening_disable_pingbacks]"
-                               value="1" <?php checked(!empty($options['hardening_disable_pingbacks'])); ?>>
-                        <?php esc_html_e('Disable pingbacks and trackbacks site-wide.', 'wpd'); ?>
-                    </label>
-                    <p class="description"><?php esc_html_e('Removes pingback XML-RPC methods and closes ping endpoints. Prevents your site from being used in DDoS amplification attacks.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Disable Emoji Scripts', 'wpd'); ?></th>
-                <td>
-                    <label>
-                        <input type="checkbox" name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[hardening_disable_emoji]"
-                               value="1" <?php checked(!empty($options['hardening_disable_emoji'])); ?>>
-                        <?php esc_html_e('Remove WordPress emoji detection scripts and DNS prefetch.', 'wpd'); ?>
-                    </label>
-                    <p class="description"><?php esc_html_e('Modern browsers render emoji natively — this WordPress script is not needed and adds unnecessary page weight.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Disable jQuery Migrate', 'wpd'); ?></th>
-                <td>
-                    <label>
-                        <input type="checkbox" name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[hardening_disable_jquery_migrate]"
-                               value="1" <?php checked(!empty($options['hardening_disable_jquery_migrate'])); ?>>
-                        <?php esc_html_e('Remove jQuery Migrate from frontend pages.', 'wpd'); ?>
-                    </label>
-                    <p class="description"><?php esc_html_e('jQuery Migrate is a compatibility shim for legacy code. Remove it on the frontend if your theme and plugins use modern jQuery.', 'wpd'); ?></p>
-                </td>
-            </tr>
-        </table>
+        <?php /* ── Sicherheitshärtung ──────────────────────────── */ ?>
+        <div class="wpd-section <?php echo !empty($options['enable_hardening']) ? 'is-active' : ''; ?>">
+            <div class="wpd-section__head">
+                <label class="wpd-section__master">
+                    <span class="wpd-toggle">
+                        <input type="checkbox"
+                               id="wpd_toggle_hardening"
+                               name="<?php echo esc_attr($k); ?>[enable_hardening]"
+                               value="1"
+                               <?php checked(!empty($options['enable_hardening'])); ?>>
+                        <span class="wpd-toggle__track"></span>
+                    </span>
+                    <span class="wpd-section__title"><?php esc_html_e('Sicherheitshärtung', 'wpd'); ?></span>
+                </label>
+                <span class="wpd-section__badge"><?php echo !empty($options['enable_hardening']) ? esc_html__('aktiv', 'wpd') : esc_html__('inaktiv', 'wpd'); ?></span>
+            </div>
+            <p class="description"><?php esc_html_e('Leichte Sicherheitsmaßnahmen zur Reduzierung der Angriffsfläche — entfernt unnötige Informationen und deaktiviert häufig missbrauchte Funktionen.', 'wpd'); ?></p>
+
+            <div class="wpd-section__body" data-controlled-by="wpd_toggle_hardening">
+                <table class="form-table" role="presentation">
+                    <tr>
+                        <th scope="row"><?php esc_html_e('XML-RPC deaktivieren', 'wpd'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="<?php echo esc_attr($k); ?>[hardening_disable_xmlrpc]"
+                                       value="1" <?php checked(!empty($options['hardening_disable_xmlrpc'])); ?>>
+                                <?php esc_html_e('XML-RPC-Schnittstelle vollständig deaktivieren.', 'wpd'); ?>
+                            </label>
+                            <p class="description"><?php esc_html_e('XML-RPC ist eine veraltete API, die häufig für Brute-Force-Angriffe missbraucht wird. Deaktivieren, sofern keine WordPress-App, Jetpack o. Ä. verwendet wird.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Autoren-Enumeration', 'wpd'); ?></th>
+                        <td>
+                            <select name="<?php echo esc_attr($k); ?>[hardening_author_enum]">
+                                <option value="off" <?php selected($options['hardening_author_enum'] ?? 'off', 'off'); ?>><?php esc_html_e('Aus (kein Schutz)', 'wpd'); ?></option>
+                                <option value="404" <?php selected($options['hardening_author_enum'] ?? 'off', '404'); ?>><?php esc_html_e('404 zurückgeben', 'wpd'); ?></option>
+                                <option value="redirect" <?php selected($options['hardening_author_enum'] ?? 'off', 'redirect'); ?>><?php esc_html_e('Zur Startseite weiterleiten', 'wpd'); ?></option>
+                            </select>
+                            <p class="description"><?php esc_html_e('Verhindert die Entdeckung von Benutzernamen über ?author=1 URLs. "404 zurückgeben" zeigt eine Fehlerseite, "Weiterleiten" leitet zur Startseite weiter.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('RSD-Link entfernen', 'wpd'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="<?php echo esc_attr($k); ?>[hardening_remove_rsd]"
+                                       value="1" <?php checked(!empty($options['hardening_remove_rsd'])); ?>>
+                                <?php esc_html_e('RSD-Link (Really Simple Discovery) aus dem Header entfernen.', 'wpd'); ?>
+                            </label>
+                            <p class="description"><?php esc_html_e('RSD wird nur für Remote-Publishing-Clients benötigt. Entfernen reduziert Informationspreisgabe.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('WLW-Manifest entfernen', 'wpd'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="<?php echo esc_attr($k); ?>[hardening_remove_wlw]"
+                                       value="1" <?php checked(!empty($options['hardening_remove_wlw'])); ?>>
+                                <?php esc_html_e('Windows Live Writer Manifest-Link entfernen.', 'wpd'); ?>
+                            </label>
+                            <p class="description"><?php esc_html_e('Windows Live Writer ist eingestellt. Dieser Link wird nicht benötigt und kann bedenkenlos entfernt werden.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Generator-Meta entfernen', 'wpd'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="<?php echo esc_attr($k); ?>[hardening_remove_generator]"
+                                       value="1" <?php checked(!empty($options['hardening_remove_generator'])); ?>>
+                                <?php esc_html_e('WordPress-Versions-Meta-Tag entfernen.', 'wpd'); ?>
+                            </label>
+                            <p class="description"><?php esc_html_e('Versteckt die WordPress-Versionsnummer im HTML-Quelltext. Verhindert, dass Angreifer versionsspezifische Schwachstellen ausnutzen.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Theme-/Plugin-Editor ausblenden', 'wpd'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="<?php echo esc_attr($k); ?>[hardening_hide_editor]"
+                                       value="1" <?php checked(!empty($options['hardening_hide_editor'])); ?>>
+                                <?php esc_html_e('Den eingebauten Theme- und Plugin-Editor aus dem Menü ausblenden.', 'wpd'); ?>
+                            </label>
+                            <p class="description"><?php esc_html_e('Entfernt die Editor-Menüeinträge. Für vollständigen Schutz zusätzlich DISALLOW_FILE_EDIT in der wp-config.php setzen.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                </table>
+
+                <h3 style="margin:20px 0 8px; font-size:13px; color:#1d2327;"><?php esc_html_e('Erweiterte Härtung', 'wpd'); ?></h3>
+                <p class="description" style="margin-bottom:12px;"><?php esc_html_e('Weitere Maßnahmen zur Reduzierung von Informationspreisgabe und Angriffsfläche.', 'wpd'); ?></p>
+
+                <table class="form-table" role="presentation">
+                    <tr>
+                        <th scope="row"><?php esc_html_e('REST-API Benutzer-Endpoint sperren', 'wpd'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="<?php echo esc_attr($k); ?>[hardening_disable_rest_users]"
+                                       value="1" <?php checked(!empty($options['hardening_disable_rest_users'])); ?>>
+                                <?php esc_html_e('/wp/v2/users für nicht authentifizierte Anfragen blockieren.', 'wpd'); ?>
+                            </label>
+                            <p class="description"><?php esc_html_e('Verhindert Benutzernamen-Enumeration über die REST-API. Authentifizierte Anfragen sind nicht betroffen.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Sicherheits-Header senden', 'wpd'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="<?php echo esc_attr($k); ?>[hardening_security_headers]"
+                                       value="1" <?php checked(!empty($options['hardening_security_headers'])); ?>>
+                                <?php esc_html_e('X-Frame-Options, X-Content-Type-Options, Referrer-Policy und Permissions-Policy hinzufügen.', 'wpd'); ?>
+                            </label>
+                            <p class="description"><?php esc_html_e('Fügt Standard-HTTP-Sicherheits-Header zu allen Antworten hinzu. Schützt vor Clickjacking, MIME-Sniffing und Informationspreisgabe.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Version aus Asset-URLs entfernen', 'wpd'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="<?php echo esc_attr($k); ?>[hardening_remove_version_assets]"
+                                       value="1" <?php checked(!empty($options['hardening_remove_version_assets'])); ?>>
+                                <?php esc_html_e('?ver=x.x aus Script- und Style-URLs entfernen.', 'wpd'); ?>
+                            </label>
+                            <p class="description"><?php esc_html_e('Versteckt WordPress- und Plugin-Versionsnummern in Asset-URLs — ergänzt das Entfernen des Generator-Meta-Tags.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Anwendungspasswörter deaktivieren', 'wpd'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="<?php echo esc_attr($k); ?>[hardening_disable_app_passwords]"
+                                       value="1" <?php checked(!empty($options['hardening_disable_app_passwords'])); ?>>
+                                <?php esc_html_e('Application Passwords Funktion vollständig deaktivieren.', 'wpd'); ?>
+                            </label>
+                            <p class="description"><?php esc_html_e('Entfernt REST-API-Authentifizierung über App-Passwörter. Deaktivieren, wenn keine externen App-Integrationen verwendet werden.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Pingbacks deaktivieren', 'wpd'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="<?php echo esc_attr($k); ?>[hardening_disable_pingbacks]"
+                                       value="1" <?php checked(!empty($options['hardening_disable_pingbacks'])); ?>>
+                                <?php esc_html_e('Pingbacks und Trackbacks seitenübergreifend deaktivieren.', 'wpd'); ?>
+                            </label>
+                            <p class="description"><?php esc_html_e('Entfernt Pingback-XML-RPC-Methoden und schließt Ping-Endpunkte. Verhindert, dass die Website für DDoS-Amplifikationsangriffe missbraucht wird.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Emoji-Skripte deaktivieren', 'wpd'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="<?php echo esc_attr($k); ?>[hardening_disable_emoji]"
+                                       value="1" <?php checked(!empty($options['hardening_disable_emoji'])); ?>>
+                                <?php esc_html_e('WordPress Emoji-Erkennungsskripte und DNS-Prefetch entfernen.', 'wpd'); ?>
+                            </label>
+                            <p class="description"><?php esc_html_e('Moderne Browser rendern Emojis nativ — das WordPress-Skript ist nicht erforderlich und erhöht das Seitengewicht unnötig.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('jQuery Migrate deaktivieren', 'wpd'); ?></th>
+                        <td>
+                            <label>
+                                <input type="checkbox" name="<?php echo esc_attr($k); ?>[hardening_disable_jquery_migrate]"
+                                       value="1" <?php checked(!empty($options['hardening_disable_jquery_migrate'])); ?>>
+                                <?php esc_html_e('jQuery Migrate von Frontend-Seiten entfernen.', 'wpd'); ?>
+                            </label>
+                            <p class="description"><?php esc_html_e('jQuery Migrate ist ein Kompatibilitäts-Shim für veralteten Code. Im Frontend entfernen, wenn Theme und Plugins modernes jQuery verwenden.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
         <?php
     }
 
     protected function render_admin_tools_tab(array $options): void {
+        $k = WPD_OPTION_KEY;
         $available_menu_items = [
-            'edit-comments.php'       => __('Comments', 'wpd'),
-            'upload.php'              => __('Media', 'wpd'),
+            'edit-comments.php'       => __('Kommentare', 'wpd'),
+            'upload.php'              => __('Medien', 'wpd'),
             'link-manager.php'        => __('Links', 'wpd'),
-            'tools.php'               => __('Tools', 'wpd'),
-            'edit.php?post_type=page' => __('Pages', 'wpd'),
+            'tools.php'               => __('Werkzeuge', 'wpd'),
+            'edit.php?post_type=page' => __('Seiten', 'wpd'),
         ];
         $hidden_items = $options['admin_hide_menu_items'] ?? [];
         ?>
-        <h2><?php esc_html_e('Update Notices', 'wpd'); ?></h2>
-        <table class="form-table" role="presentation">
-            <tr>
-                <th scope="row"><?php esc_html_e('Hide for Non-Admins', 'wpd'); ?></th>
-                <td>
-                    <label>
-                        <input type="checkbox" name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[admin_hide_update_notices]"
-                               value="1" <?php checked(!empty($options['admin_hide_update_notices'])); ?>>
-                        <?php esc_html_e('Hide WordPress core, plugin, and theme update notices for editors and other non-admin users.', 'wpd'); ?>
-                    </label>
-                    <p class="description"><?php esc_html_e('Keeps the backend clean for content editors who do not manage updates. Admins always see update notices.', 'wpd'); ?></p>
-                </td>
-            </tr>
-        </table>
+
+        <?php /* ── Update-Hinweise ────────────────────────────── */ ?>
+        <div class="wpd-section <?php echo !empty($options['admin_hide_update_notices']) ? 'is-active' : ''; ?>">
+            <div class="wpd-section__head">
+                <label class="wpd-section__master">
+                    <span class="wpd-toggle">
+                        <input type="checkbox"
+                               id="wpd_toggle_update_notices"
+                               name="<?php echo esc_attr($k); ?>[admin_hide_update_notices]"
+                               value="1"
+                               <?php checked(!empty($options['admin_hide_update_notices'])); ?>>
+                        <span class="wpd-toggle__track"></span>
+                    </span>
+                    <span class="wpd-section__title"><?php esc_html_e('Update-Hinweise ausblenden', 'wpd'); ?></span>
+                </label>
+                <span class="wpd-section__badge"><?php echo !empty($options['admin_hide_update_notices']) ? esc_html__('aktiv', 'wpd') : esc_html__('inaktiv', 'wpd'); ?></span>
+            </div>
+            <p class="description"><?php esc_html_e('WordPress-Core-, Plugin- und Theme-Update-Hinweise für Redakteure und andere Nicht-Admin-Benutzer ausblenden. Admins sehen Update-Hinweise immer.', 'wpd'); ?></p>
+        </div>
 
         <hr>
-        <h2><?php esc_html_e('Maintenance Mode', 'wpd'); ?></h2>
-        <table class="form-table" role="presentation">
-            <tr>
-                <th scope="row"><?php esc_html_e('Enable Maintenance Mode', 'wpd'); ?></th>
-                <td>
-                    <label>
-                        <input type="checkbox" name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[enable_maintenance_mode]"
-                               value="1" <?php checked(!empty($options['enable_maintenance_mode'])); ?>>
-                        <?php esc_html_e('Block the frontend for non-logged-in visitors with a maintenance message.', 'wpd'); ?>
-                    </label>
-                    <p class="description"><?php esc_html_e('Returns HTTP 503 for all frontend visitors who are not logged in. Logged-in users and the admin area are unaffected.', 'wpd'); ?></p>
-                </td>
-            </tr>
-        </table>
+
+        <?php /* ── Wartungsmodus ────────────────────────────────── */ ?>
+        <div class="wpd-section <?php echo !empty($options['enable_maintenance_mode']) ? 'is-active' : ''; ?>">
+            <div class="wpd-section__head">
+                <label class="wpd-section__master">
+                    <span class="wpd-toggle">
+                        <input type="checkbox"
+                               id="wpd_toggle_maintenance"
+                               name="<?php echo esc_attr($k); ?>[enable_maintenance_mode]"
+                               value="1"
+                               <?php checked(!empty($options['enable_maintenance_mode'])); ?>>
+                        <span class="wpd-toggle__track"></span>
+                    </span>
+                    <span class="wpd-section__title"><?php esc_html_e('Wartungsmodus', 'wpd'); ?></span>
+                </label>
+                <span class="wpd-section__badge"><?php echo !empty($options['enable_maintenance_mode']) ? esc_html__('aktiv', 'wpd') : esc_html__('inaktiv', 'wpd'); ?></span>
+            </div>
+            <p class="description"><?php esc_html_e('Sperrt das Frontend für nicht eingeloggte Besucher mit einer Wartungsmeldung (HTTP 503). Eingeloggte Nutzer und der Adminbereich sind nicht betroffen.', 'wpd'); ?></p>
+        </div>
 
         <hr>
-        <h2><?php esc_html_e('Admin Menu', 'wpd'); ?></h2>
-        <p class="description"><?php esc_html_e('Hide specific menu items from non-admin users (editors, authors, etc.). Admins always see all menu items.', 'wpd'); ?></p>
-        <table class="form-table" role="presentation">
-            <tr>
-                <th scope="row"><?php esc_html_e('Hide Menu Items', 'wpd'); ?></th>
-                <td>
+
+        <?php /* ── Admin-Menü ───────────────────────────────────── */ ?>
+        <div class="wpd-section is-active">
+            <div class="wpd-section__head">
+                <span class="wpd-section__title"><?php esc_html_e('Admin-Menü', 'wpd'); ?></span>
+            </div>
+            <p class="description"><?php esc_html_e('Bestimmte Menüeinträge für Nicht-Admin-Benutzer (Redakteure, Autoren usw.) ausblenden. Admins sehen immer alle Menüeinträge.', 'wpd'); ?></p>
+
+            <div class="wpd-section__body">
+                <div class="wpd-checkbox-grid" style="margin-top:8px;">
                     <?php foreach ($available_menu_items as $slug => $label) : ?>
-                        <label style="display:block;margin-bottom:6px;">
+                        <label class="wpd-checkbox-item">
                             <input type="checkbox"
-                                   name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[admin_hide_menu_items][]"
+                                   name="<?php echo esc_attr($k); ?>[admin_hide_menu_items][]"
                                    value="<?php echo esc_attr($slug); ?>"
                                    <?php checked(in_array($slug, $hidden_items, true)); ?>>
-                            <?php echo esc_html($label); ?>
-                            <code style="font-size:11px;color:#787c82;"><?php echo esc_html($slug); ?></code>
+                            <span><?php echo esc_html($label); ?></span>
+                            <code><?php echo esc_html($slug); ?></code>
                         </label>
                     <?php endforeach; ?>
-                    <p class="description"><?php esc_html_e('Checked items are hidden for non-admin users. Content remains accessible via direct URL.', 'wpd'); ?></p>
-                </td>
-            </tr>
-        </table>
+                </div>
+                <p class="description" style="margin-top:12px;"><?php esc_html_e('Aktivierte Einträge werden für Nicht-Admin-Nutzer ausgeblendet. Die Inhalte bleiben über direkte URLs zugänglich.', 'wpd'); ?></p>
+            </div>
+        </div>
+
         <?php
     }
 
     protected function render_updates_tab(array $options): void {
+        $k = WPD_OPTION_KEY;
         ?>
-        <h2><?php esc_html_e('Plugin Updates', 'wpd'); ?></h2>
-        <p class="description"><?php esc_html_e('Configure automatic update checks from GitHub releases or a custom update server. This allows WP Default to be updated like any other plugin through the WordPress dashboard.', 'wpd'); ?></p>
-        <table class="form-table" role="presentation">
-            <tr>
-                <th scope="row"><?php esc_html_e('Enable Updater', 'wpd'); ?></th>
-                <td>
-                    <label>
-                        <input type="checkbox" name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[enable_updater]"
-                               value="1" <?php checked(!empty($options['enable_updater'])); ?>>
-                        <?php esc_html_e('Enable automatic update checks.', 'wpd'); ?>
-                    </label>
-                    <p class="description"><?php esc_html_e('When enabled, WordPress will periodically check the configured source for new versions of this plugin.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Update Source', 'wpd'); ?></th>
-                <td>
-                    <select name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[updater_mode]">
-                        <option value="off" <?php selected($options['updater_mode'] ?? 'off', 'off'); ?>>
-                            <?php esc_html_e('Off', 'wpd'); ?>
-                        </option>
-                        <option value="github" <?php selected($options['updater_mode'] ?? 'off', 'github'); ?>>
-                            <?php esc_html_e('GitHub', 'wpd'); ?>
-                        </option>
-                        <option value="custom" <?php selected($options['updater_mode'] ?? 'off', 'custom'); ?>>
-                            <?php esc_html_e('Custom URL', 'wpd'); ?>
-                        </option>
-                    </select>
-                    <p class="description"><?php esc_html_e('Choose where to check for updates. GitHub uses the releases API, Custom URL expects a JSON endpoint.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('GitHub Repository', 'wpd'); ?></th>
-                <td>
-                    <input type="text" class="regular-text"
-                           name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[updater_github_repo]"
-                           value="<?php echo esc_attr($options['updater_github_repo'] ?? ''); ?>"
-                           placeholder="username/repository">
-                    <p class="description"><?php esc_html_e('Format: username/repository (e.g., acme/wp-default-dashboard). The repository must have GitHub Releases with zip assets.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('GitHub Access Token', 'wpd'); ?></th>
-                <td>
-                    <input type="password" class="regular-text"
-                           name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[updater_github_token]"
-                           value="<?php echo esc_attr($options['updater_github_token'] ?? ''); ?>"
-                           autocomplete="off">
-                    <p class="description"><?php esc_html_e('Required only for private repositories. Generate a personal access token with "repo" scope at github.com/settings/tokens.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Custom Update URL', 'wpd'); ?></th>
-                <td>
-                    <input type="url" class="regular-text"
-                           name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[updater_custom_url]"
-                           value="<?php echo esc_url($options['updater_custom_url'] ?? ''); ?>"
-                           placeholder="https://example.com/updates/info.json">
-                    <p class="description"><?php esc_html_e('A URL to a JSON file with version info. Must contain "version", "download_url", and optionally "tested", "requires_php" fields.', 'wpd'); ?></p>
-                </td>
-            </tr>
-        </table>
+
+        <?php /* ── Plugin-Updates ───────────────────────────────── */ ?>
+        <div class="wpd-section <?php echo !empty($options['enable_updater']) ? 'is-active' : ''; ?>">
+            <div class="wpd-section__head">
+                <label class="wpd-section__master">
+                    <span class="wpd-toggle">
+                        <input type="checkbox"
+                               id="wpd_toggle_updater"
+                               name="<?php echo esc_attr($k); ?>[enable_updater]"
+                               value="1"
+                               <?php checked(!empty($options['enable_updater'])); ?>>
+                        <span class="wpd-toggle__track"></span>
+                    </span>
+                    <span class="wpd-section__title"><?php esc_html_e('Plugin-Updates', 'wpd'); ?></span>
+                </label>
+                <span class="wpd-section__badge"><?php echo !empty($options['enable_updater']) ? esc_html__('aktiv', 'wpd') : esc_html__('inaktiv', 'wpd'); ?></span>
+            </div>
+            <p class="description"><?php esc_html_e('Automatische Update-Prüfungen von GitHub-Releases oder einem benutzerdefinierten Update-Server. Ermöglicht das Aktualisieren von WP Default wie jedes andere Plugin.', 'wpd'); ?></p>
+
+            <div class="wpd-section__body" data-controlled-by="wpd_toggle_updater">
+                <table class="form-table" role="presentation">
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Update-Quelle', 'wpd'); ?></th>
+                        <td>
+                            <select name="<?php echo esc_attr($k); ?>[updater_mode]">
+                                <option value="off" <?php selected($options['updater_mode'] ?? 'off', 'off'); ?>><?php esc_html_e('Aus', 'wpd'); ?></option>
+                                <option value="github" <?php selected($options['updater_mode'] ?? 'off', 'github'); ?>><?php esc_html_e('GitHub', 'wpd'); ?></option>
+                                <option value="custom" <?php selected($options['updater_mode'] ?? 'off', 'custom'); ?>><?php esc_html_e('Benutzerdefinierte URL', 'wpd'); ?></option>
+                            </select>
+                            <p class="description"><?php esc_html_e('Update-Quelle auswählen. GitHub nutzt die Releases-API, Benutzerdefinierte URL erwartet einen JSON-Endpunkt.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('GitHub-Repository', 'wpd'); ?></th>
+                        <td>
+                            <input type="text" class="regular-text"
+                                   name="<?php echo esc_attr($k); ?>[updater_github_repo]"
+                                   value="<?php echo esc_attr($options['updater_github_repo'] ?? ''); ?>"
+                                   placeholder="benutzername/repository">
+                            <p class="description"><?php esc_html_e('Format: benutzername/repository (z. B. acme/wp-default-dashboard). Das Repository muss GitHub Releases mit ZIP-Assets haben.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('GitHub Access Token', 'wpd'); ?></th>
+                        <td>
+                            <input type="password" class="regular-text"
+                                   name="<?php echo esc_attr($k); ?>[updater_github_token]"
+                                   value="<?php echo esc_attr($options['updater_github_token'] ?? ''); ?>"
+                                   autocomplete="off">
+                            <p class="description"><?php esc_html_e('Nur für private Repositories erforderlich. Personal Access Token mit "repo"-Scope unter github.com/settings/tokens erstellen.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Benutzerdefinierte Update-URL', 'wpd'); ?></th>
+                        <td>
+                            <input type="url" class="regular-text"
+                                   name="<?php echo esc_attr($k); ?>[updater_custom_url]"
+                                   value="<?php echo esc_url($options['updater_custom_url'] ?? ''); ?>"
+                                   placeholder="https://example.com/updates/info.json">
+                            <p class="description"><?php esc_html_e('URL zu einer JSON-Datei mit Versionsinformationen. Muss "version", "download_url" und optional "tested", "requires_php" enthalten.', 'wpd'); ?></p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
         <?php
     }
 
@@ -1005,9 +1097,12 @@ class WPD_Settings {
 
         $valid_schemes = ['', 'fresh', 'light', 'blue', 'coffee', 'ectoplasm', 'midnight', 'ocean', 'sunrise'];
         $scheme = $input['admin_color_scheme'] ?? '';
-        $sanitized['admin_color_scheme']   = in_array($scheme, $valid_schemes, true) ? $scheme : '';
-        $sanitized['admin_primary_color']  = sanitize_hex_color($input['admin_primary_color'] ?? '') ?: '';
-        $sanitized['admin_accent_color']   = sanitize_hex_color($input['admin_accent_color'] ?? '') ?: '';
+        $sanitized['admin_color_scheme']     = in_array($scheme, $valid_schemes, true) ? $scheme : '';
+        $sanitized['admin_primary_color']    = sanitize_hex_color($input['admin_primary_color'] ?? '') ?: '';
+        $sanitized['admin_accent_color']     = sanitize_hex_color($input['admin_accent_color'] ?? '') ?: '';
+        $sanitized['admin_bar_bg_color']     = sanitize_hex_color($input['admin_bar_bg_color'] ?? '') ?: '';
+        $sanitized['admin_bar_text_color']   = sanitize_hex_color($input['admin_bar_text_color'] ?? '') ?: '';
+        $sanitized['admin_menu_text_color']  = sanitize_hex_color($input['admin_menu_text_color'] ?? '') ?: '';
 
         $sanitized['enable_hardening']                 = !empty($input['enable_hardening']);
         $sanitized['hardening_disable_xmlrpc']         = !empty($input['hardening_disable_xmlrpc']);

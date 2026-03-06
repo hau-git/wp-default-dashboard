@@ -357,6 +357,18 @@
     margin-top: 4px;
 }
 
+/* ── WP Color Picker tweaks ────────────────────────────────── */
+.wpd-section__body .wp-picker-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.wpd-section__body .wp-picker-container .wp-color-result {
+    margin: 0;
+}
+
 /* ── Responsive ────────────────────────────────────────────── */
 @media screen and (max-width: 1100px) {
     .wpd-columns-grid {

@@ -46,16 +46,17 @@ class WPD_Admin {
 
         if ($hook === 'settings_page_wpd-settings') {
             wp_enqueue_media();
+            wp_enqueue_style('wp-color-picker');
             wp_enqueue_style(
                 'wpd-admin',
                 WPD_PLUGIN_URL . 'assets/admin.css',
-                [],
+                ['wp-color-picker'],
                 WPD_VERSION
             );
             wp_enqueue_script(
                 'wpd-admin',
                 WPD_PLUGIN_URL . 'assets/admin.js',
-                ['jquery'],
+                ['jquery', 'wp-color-picker'],
                 WPD_VERSION,
                 true
             );

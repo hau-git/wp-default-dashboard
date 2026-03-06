@@ -77,6 +77,9 @@ function wpd_get_defaults(): array {
         'admin_color_scheme'               => '',
         'admin_primary_color'              => '',
         'admin_accent_color'               => '',
+        'admin_bar_bg_color'               => '',
+        'admin_bar_text_color'             => '',
+        'admin_menu_text_color'            => '',
         'login_button_color'               => '',
         'login_link_color'                 => '',
 
