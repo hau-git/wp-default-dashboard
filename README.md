@@ -84,6 +84,16 @@ All plugin data is stored in a single WordPress option: `wpd_options`. Enable "D
 
 ## Changelog
 
+### 1.2.2 — 2026-03-06
+
+**Dashboard Tab**
+- Redesigned: Dashboard tab layout completely overhauled — each feature (Widget-Verwaltung, Oberes Banner, Inhaltstypen-Banner) is now a collapsible card with a toggle switch as its master control
+- Fixed: Widget list and Post Type list now only appear when the respective master toggle is enabled (the body collapses/expands with animation)
+- Redesigned: Top Banner columns are now displayed in a compact 2×2 card grid instead of four consecutive table rows — replacing TinyMCE editors with plain textareas (HTML supported) for a cleaner editing experience
+- Added: Active/inactive badge per section that updates live when toggling
+
+---
+
 ### 1.2.1 — 2026-03-06
 
 **Erscheinungsbild**

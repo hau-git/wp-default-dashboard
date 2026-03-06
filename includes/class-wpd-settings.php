@@ -173,180 +173,200 @@ class WPD_Settings {
     }
 
     protected function render_dashboard_tab(array $options): void {
+        $k = WPD_OPTION_KEY;
         ?>
-        <h2><?php esc_html_e('Dashboard Widget Manager', 'wpd'); ?></h2>
-        <p class="description"><?php esc_html_e('Control which dashboard widgets are visible to all users. Disabled widgets will be completely removed from the dashboard.', 'wpd'); ?></p>
-        <table class="form-table" role="presentation">
-            <tr>
-                <th scope="row"><?php esc_html_e('Enable Widget Manager', 'wpd'); ?></th>
-                <td>
-                    <label>
-                        <input type="checkbox" name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[enable_dashboard_manager]"
-                               value="1" <?php checked(!empty($options['enable_dashboard_manager'])); ?>>
-                        <?php esc_html_e('Manage dashboard widgets globally for all users.', 'wpd'); ?>
-                    </label>
-                    <p class="description"><?php esc_html_e('When enabled, only checked widgets below will remain visible on the dashboard. Unchecked widgets are removed for all users.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Active Widgets', 'wpd'); ?></th>
-                <td>
-                    <?php
-                    $available = WPD_Dashboard::get_available_dashboard_widgets();
-                    $disabled  = WPD_Dashboard::normalize_disabled_widgets($options['disabled_dashboard_widgets'] ?? []);
 
-                    if (empty($available)) {
-                        echo '<p class="description">' . esc_html__('No dashboard widgets detected. Widgets are discovered automatically from WordPress.', 'wpd') . '</p>';
-                    } else {
-                        foreach ($available as $widget_id => $widget_data) {
-                            $is_active = !isset($disabled[$widget_id]);
-                            printf(
-                                '<label style="display:block;margin-bottom:6px;"><input type="checkbox" name="%s[active_dashboard_widgets][%s]" value="%s" %s> %s <code style="font-size:11px;color:#787c82;">%s</code></label>',
-                                esc_attr(WPD_OPTION_KEY),
-                                esc_attr($widget_id),
-                                esc_attr($widget_data['context']),
-                                checked($is_active, true, false),
-                                esc_html($widget_data['title']),
-                                esc_html($widget_id)
-                            );
-                        }
-                        echo '<p class="description">' . esc_html__('Checked widgets remain visible. Uncheck a widget to remove it from the dashboard for all users.', 'wpd') . '</p>';
-                    }
-                    ?>
-                </td>
-            </tr>
-        </table>
+        <?php /* ── Widget-Verwaltung ───────────────────────────────────── */ ?>
+        <div class="wpd-section <?php echo !empty($options['enable_dashboard_manager']) ? 'is-active' : ''; ?>">
+            <div class="wpd-section__head">
+                <label class="wpd-section__master">
+                    <span class="wpd-toggle">
+                        <input type="checkbox"
+                               id="wpd_toggle_widgets"
+                               name="<?php echo esc_attr($k); ?>[enable_dashboard_manager]"
+                               value="1"
+                               <?php checked(!empty($options['enable_dashboard_manager'])); ?>>
+                        <span class="wpd-toggle__track"></span>
+                    </span>
+                    <span class="wpd-section__title"><?php esc_html_e('Widget-Verwaltung', 'wpd'); ?></span>
+                </label>
+                <span class="wpd-section__badge"><?php echo !empty($options['enable_dashboard_manager']) ? esc_html__('aktiv', 'wpd') : esc_html__('inaktiv', 'wpd'); ?></span>
+            </div>
+            <p class="description"><?php esc_html_e('Legt global für alle Benutzer fest, welche Dashboard-Widgets sichtbar sind. Deaktivierte Widgets werden vollständig entfernt.', 'wpd'); ?></p>
 
-        <hr>
-        <h2><?php esc_html_e('Top Banner', 'wpd'); ?></h2>
-        <p class="description"><?php esc_html_e('Display a customizable information banner at the top of the dashboard. Use it for announcements, quick links, or onboarding content with up to 4 columns.', 'wpd'); ?></p>
-        <table class="form-table" role="presentation">
-            <tr>
-                <th scope="row"><?php esc_html_e('Enable Top Banner', 'wpd'); ?></th>
-                <td>
-                    <label>
-                        <input type="checkbox" name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[enable_top_banner]"
-                               value="1" <?php checked(!empty($options['enable_top_banner'])); ?>>
-                        <?php esc_html_e('Show a custom banner above the dashboard widgets.', 'wpd'); ?>
-                    </label>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Headline', 'wpd'); ?></th>
-                <td>
-                    <input type="text" class="large-text"
-                           name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[top_banner_headline]"
-                           value="<?php echo esc_attr($options['top_banner_headline'] ?? ''); ?>">
-                    <p class="description"><?php esc_html_e('The main heading displayed at the top of the banner.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Introduction', 'wpd'); ?></th>
-                <td>
-                    <textarea class="large-text" rows="3"
-                              name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[top_banner_intro]"><?php echo esc_textarea($options['top_banner_intro'] ?? ''); ?></textarea>
-                    <p class="description"><?php esc_html_e('A short introduction text shown below the headline.', 'wpd'); ?></p>
-                </td>
-            </tr>
-            <?php
-            $columns = $options['top_banner_columns'] ?? [];
-            for ($i = 0; $i < 4; $i++) :
-                $col = $columns[$i] ?? ['content' => '', 'button_label' => '', 'button_url' => ''];
-                ?>
-                <tr>
-                    <th scope="row"><?php printf(esc_html__('Column %d', 'wpd'), $i + 1); ?></th>
-                    <td>
-                        <p><strong><?php esc_html_e('Content', 'wpd'); ?></strong></p>
-                        <?php
-                        wp_editor(
-                            $col['content'] ?? '',
-                            'wpd_col_' . $i,
-                            [
-                                'textarea_name' => WPD_OPTION_KEY . '[top_banner_columns][' . $i . '][content]',
-                                'textarea_rows' => 5,
-                                'media_buttons' => true,
-                                'teeny'         => true,
-                            ]
+            <div class="wpd-section__body" data-controlled-by="wpd_toggle_widgets">
+                <?php
+                $available = WPD_Dashboard::get_available_dashboard_widgets();
+                $disabled  = WPD_Dashboard::normalize_disabled_widgets($options['disabled_dashboard_widgets'] ?? []);
+
+                if (empty($available)) {
+                    echo '<p class="description">' . esc_html__('Noch keine Widgets erkannt — sie werden beim ersten Öffnen des Dashboards automatisch gefunden.', 'wpd') . '</p>';
+                } else {
+                    echo '<div class="wpd-checkbox-grid">';
+                    foreach ($available as $widget_id => $widget_data) {
+                        $is_active = !isset($disabled[$widget_id]);
+                        printf(
+                            '<label class="wpd-checkbox-item"><input type="checkbox" name="%1$s[active_dashboard_widgets][%2$s]" value="%3$s" %4$s><span>%5$s</span><code>%2$s</code></label>',
+                            esc_attr($k),
+                            esc_attr($widget_id),
+                            esc_attr($widget_data['context']),
+                            checked($is_active, true, false),
+                            esc_html($widget_data['title'])
                         );
-                        ?>
-                        <p style="margin-top:8px;">
-                            <label><?php esc_html_e('Button Label', 'wpd'); ?>
-                                <input type="text" class="regular-text"
-                                       name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[top_banner_columns][<?php echo $i; ?>][button_label]"
-                                       value="<?php echo esc_attr($col['button_label'] ?? ''); ?>">
-                            </label>
-                        </p>
-                        <p>
-                            <label><?php esc_html_e('Button URL', 'wpd'); ?>
-                                <input type="url" class="regular-text"
-                                       name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[top_banner_columns][<?php echo $i; ?>][button_url]"
-                                       value="<?php echo esc_url($col['button_url'] ?? ''); ?>">
-                            </label>
-                        </p>
-                        <p class="description"><?php printf(esc_html__('Leave empty to hide column %d. Each column can have rich text content and an optional button.', 'wpd'), $i + 1); ?></p>
-                    </td>
-                </tr>
-            <?php endfor; ?>
-        </table>
-
-        <hr>
-        <h2><?php esc_html_e('Post Types Banner', 'wpd'); ?></h2>
-        <p class="description"><?php esc_html_e('Show quick-access buttons on the dashboard for creating new content. Each button links directly to the "Add New" screen of the selected post type and uses its native WordPress icon and label.', 'wpd'); ?></p>
-        <table class="form-table" role="presentation">
-            <tr>
-                <th scope="row"><?php esc_html_e('Enable Post Types Banner', 'wpd'); ?></th>
-                <td>
-                    <label>
-                        <input type="checkbox" name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[enable_posttypes_banner]"
-                               value="1" <?php checked(!empty($options['enable_posttypes_banner'])); ?>>
-                        <?php esc_html_e('Show post type quick-access buttons on the dashboard.', 'wpd'); ?>
-                    </label>
-                </td>
-            </tr>
-            <tr>
-                <th scope="row"><?php esc_html_e('Visible Post Types', 'wpd'); ?></th>
-                <td>
-                    <?php
-                    $all_post_types = get_post_types(['public' => true, 'show_ui' => true], 'objects');
-                    unset($all_post_types['attachment']);
-                    $selected_pts = $options['posttypes_selected'] ?? [];
-
-                    if (empty($all_post_types)) {
-                        echo '<p class="description">' . esc_html__('No public post types found.', 'wpd') . '</p>';
-                    } else {
-                        foreach ($all_post_types as $pt) {
-                            $is_selected = empty($selected_pts) || in_array($pt->name, $selected_pts, true);
-                            printf(
-                                '<label style="display:block;margin-bottom:6px;"><input type="checkbox" name="%s[posttypes_selected][]" value="%s" %s> %s <code style="font-size:11px;color:#787c82;">%s</code></label>',
-                                esc_attr(WPD_OPTION_KEY),
-                                esc_attr($pt->name),
-                                checked($is_selected, true, false),
-                                esc_html($pt->labels->name ?? $pt->label),
-                                esc_html($pt->name)
-                            );
-                        }
-                        echo '<p class="description">' . esc_html__('Select which post types to show in the banner. If none are checked, all public post types will be displayed.', 'wpd') . '</p>';
                     }
-                    ?>
+                    echo '</div>';
+                    echo '<p class="description" style="margin-top:12px;">' . esc_html__('Aktivierte Widgets bleiben sichtbar. Deaktivierte Widgets werden für alle Nutzer ausgeblendet.', 'wpd') . '</p>';
+                }
+                ?>
+            </div>
+        </div>
+
+        <hr>
+
+        <?php /* ── Oberes Banner ──────────────────────────────────────── */ ?>
+        <div class="wpd-section <?php echo !empty($options['enable_top_banner']) ? 'is-active' : ''; ?>">
+            <div class="wpd-section__head">
+                <label class="wpd-section__master">
+                    <span class="wpd-toggle">
+                        <input type="checkbox"
+                               id="wpd_toggle_top_banner"
+                               name="<?php echo esc_attr($k); ?>[enable_top_banner]"
+                               value="1"
+                               <?php checked(!empty($options['enable_top_banner'])); ?>>
+                        <span class="wpd-toggle__track"></span>
+                    </span>
+                    <span class="wpd-section__title"><?php esc_html_e('Oberes Banner', 'wpd'); ?></span>
+                </label>
+                <span class="wpd-section__badge"><?php echo !empty($options['enable_top_banner']) ? esc_html__('aktiv', 'wpd') : esc_html__('inaktiv', 'wpd'); ?></span>
+            </div>
+            <p class="description"><?php esc_html_e('Anpassbares Informationsbanner oben auf dem Dashboard — für Ankündigungen, Links oder Onboarding-Inhalte mit bis zu 4 Spalten.', 'wpd'); ?></p>
+
+            <div class="wpd-section__body" data-controlled-by="wpd_toggle_top_banner">
+                <table class="form-table" role="presentation">
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Überschrift', 'wpd'); ?></th>
+                        <td>
+                            <input type="text" class="large-text"
+                                   name="<?php echo esc_attr($k); ?>[top_banner_headline]"
+                                   value="<?php echo esc_attr($options['top_banner_headline'] ?? ''); ?>">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><?php esc_html_e('Einleitungstext', 'wpd'); ?></th>
+                        <td>
+                            <textarea class="large-text" rows="2"
+                                      name="<?php echo esc_attr($k); ?>[top_banner_intro]"><?php echo esc_textarea($options['top_banner_intro'] ?? ''); ?></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <?php esc_html_e('Spalten', 'wpd'); ?>
+                            <p class="description" style="font-weight:400;margin-top:4px;"><?php esc_html_e('HTML erlaubt. Leere Spalten werden ausgeblendet.', 'wpd'); ?></p>
+                        </th>
+                        <td>
+                            <div class="wpd-columns-grid">
+                                <?php
+                                $columns = $options['top_banner_columns'] ?? [];
+                                for ($i = 0; $i < 4; $i++) :
+                                    $col = $columns[$i] ?? ['content' => '', 'button_label' => '', 'button_url' => ''];
+                                ?>
+                                <div class="wpd-column-card">
+                                    <div class="wpd-column-card__head">
+                                        <?php printf(esc_html__('Spalte %d', 'wpd'), $i + 1); ?>
+                                    </div>
+                                    <div class="wpd-column-card__body">
+                                        <label class="wpd-field-label"><?php esc_html_e('Inhalt', 'wpd'); ?></label>
+                                        <textarea class="widefat" rows="6"
+                                                  name="<?php echo esc_attr($k); ?>[top_banner_columns][<?php echo $i; ?>][content]"
+                                                  placeholder="<?php esc_attr_e('HTML-Inhalt der Spalte …', 'wpd'); ?>"><?php echo esc_textarea($col['content'] ?? ''); ?></textarea>
+
+                                        <label class="wpd-field-label"><?php esc_html_e('Button-Beschriftung', 'wpd'); ?></label>
+                                        <input type="text" class="widefat"
+                                               name="<?php echo esc_attr($k); ?>[top_banner_columns][<?php echo $i; ?>][button_label]"
+                                               value="<?php echo esc_attr($col['button_label'] ?? ''); ?>"
+                                               placeholder="<?php esc_attr_e('z. B. Mehr erfahren', 'wpd'); ?>">
+
+                                        <label class="wpd-field-label"><?php esc_html_e('Button-URL', 'wpd'); ?></label>
+                                        <input type="url" class="widefat"
+                                               name="<?php echo esc_attr($k); ?>[top_banner_columns][<?php echo $i; ?>][button_url]"
+                                               value="<?php echo esc_url($col['button_url'] ?? ''); ?>"
+                                               placeholder="https://">
+                                    </div>
+                                </div>
+                                <?php endfor; ?>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <hr>
+
+        <?php /* ── Inhaltstypen-Banner ────────────────────────────────── */ ?>
+        <div class="wpd-section <?php echo !empty($options['enable_posttypes_banner']) ? 'is-active' : ''; ?>">
+            <div class="wpd-section__head">
+                <label class="wpd-section__master">
+                    <span class="wpd-toggle">
+                        <input type="checkbox"
+                               id="wpd_toggle_posttypes"
+                               name="<?php echo esc_attr($k); ?>[enable_posttypes_banner]"
+                               value="1"
+                               <?php checked(!empty($options['enable_posttypes_banner'])); ?>>
+                        <span class="wpd-toggle__track"></span>
+                    </span>
+                    <span class="wpd-section__title"><?php esc_html_e('Inhaltstypen-Banner', 'wpd'); ?></span>
+                </label>
+                <span class="wpd-section__badge"><?php echo !empty($options['enable_posttypes_banner']) ? esc_html__('aktiv', 'wpd') : esc_html__('inaktiv', 'wpd'); ?></span>
+            </div>
+            <p class="description"><?php esc_html_e('Schnellzugriff-Kacheln auf dem Dashboard für das Anlegen neuer Inhalte — mit Zähler für Veröffentlichungen und Entwürfe.', 'wpd'); ?></p>
+
+            <div class="wpd-section__body" data-controlled-by="wpd_toggle_posttypes">
+                <?php
+                $all_post_types = get_post_types(['public' => true, 'show_ui' => true], 'objects');
+                unset($all_post_types['attachment']);
+                $selected_pts = $options['posttypes_selected'] ?? [];
+
+                if (empty($all_post_types)) {
+                    echo '<p class="description">' . esc_html__('Keine öffentlichen Inhaltstypen gefunden.', 'wpd') . '</p>';
+                } else {
+                    echo '<div class="wpd-checkbox-grid">';
+                    foreach ($all_post_types as $pt) {
+                        $is_selected = empty($selected_pts) || in_array($pt->name, $selected_pts, true);
+                        printf(
+                            '<label class="wpd-checkbox-item"><input type="checkbox" name="%1$s[posttypes_selected][]" value="%2$s" %3$s><span>%4$s</span><code>%2$s</code></label>',
+                            esc_attr($k),
+                            esc_attr($pt->name),
+                            checked($is_selected, true, false),
+                            esc_html($pt->labels->name ?? $pt->label)
+                        );
+                    }
+                    echo '</div>';
+                    echo '<p class="description" style="margin-top:12px;">' . esc_html__('Ausgewählte Inhaltstypen erscheinen im Banner. Wenn nichts ausgewählt ist, werden alle angezeigt.', 'wpd') . '</p>';
+                }
+                ?>
+            </div>
+        </div>
+
+        <hr>
+
+        <?php /* ── Daten ───────────────────────────────────────────────── */ ?>
+        <table class="form-table" role="presentation">
+            <tr>
+                <th scope="row"><?php esc_html_e('Daten bei Deinstallation löschen', 'wpd'); ?></th>
+                <td>
+                    <label>
+                        <input type="checkbox"
+                               name="<?php echo esc_attr($k); ?>[delete_data_on_uninstall]"
+                               value="1"
+                               <?php checked(!empty($options['delete_data_on_uninstall'])); ?>>
+                        <?php esc_html_e('Alle Plugin-Einstellungen beim Löschen des Plugins permanent aus der Datenbank entfernen.', 'wpd'); ?>
+                    </label>
+                    <p class="description"><?php esc_html_e('Das Deaktivieren des Plugins löscht keine Daten.', 'wpd'); ?></p>
                 </td>
             </tr>
         </table>
 
-        <hr>
-        <h2><?php esc_html_e('Data', 'wpd'); ?></h2>
-        <table class="form-table" role="presentation">
-            <tr>
-                <th scope="row"><?php esc_html_e('Delete Data on Uninstall', 'wpd'); ?></th>
-                <td>
-                    <label>
-                        <input type="checkbox" name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[delete_data_on_uninstall]"
-                               value="1" <?php checked(!empty($options['delete_data_on_uninstall'])); ?>>
-                        <?php esc_html_e('Remove all plugin settings when the plugin is deleted.', 'wpd'); ?>
-                    </label>
-                    <p class="description"><?php esc_html_e('When enabled, all WP Default options will be permanently removed from the database upon plugin deletion. Deactivating the plugin does not delete data.', 'wpd'); ?></p>
-                </td>
-            </tr>
-        </table>
         <?php
     }
 

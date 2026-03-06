@@ -147,3 +147,233 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Settings Page — Dashboard Tab
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Section card ──────────────────────────────────────────── */
+.wpd-section {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-left: 4px solid #c3c4c7;
+    border-radius: 0 3px 3px 0;
+    padding: 16px 20px 20px;
+    margin: 16px 0;
+    transition: border-color 0.15s;
+}
+
+.wpd-section.is-active {
+    border-left-color: #2271b1;
+}
+
+/* ── Section head ──────────────────────────────────────────── */
+.wpd-section__head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+}
+
+.wpd-section__master {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    flex: 1;
+}
+
+.wpd-section__title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d2327;
+    line-height: 1.4;
+}
+
+.wpd-section__badge {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: #dcdcde;
+    color: #50575e;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+}
+
+.wpd-section.is-active .wpd-section__badge {
+    background: #d7edff;
+    color: #1d6aa8;
+}
+
+/* ── Toggle switch ─────────────────────────────────────────── */
+.wpd-toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.wpd-toggle input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.wpd-toggle__track {
+    display: block;
+    width: 36px;
+    height: 20px;
+    background: #c3c4c7;
+    border-radius: 10px;
+    position: relative;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.wpd-toggle__track::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,.25);
+    transition: transform 0.2s;
+}
+
+.wpd-toggle input[type="checkbox"]:checked + .wpd-toggle__track {
+    background: #2271b1;
+}
+
+.wpd-toggle input[type="checkbox"]:checked + .wpd-toggle__track::after {
+    transform: translateX(16px);
+}
+
+.wpd-toggle input[type="checkbox"]:focus-visible + .wpd-toggle__track {
+    outline: 2px solid #2271b1;
+    outline-offset: 2px;
+}
+
+/* ── Section body (collapsible) ────────────────────────────── */
+.wpd-section__body {
+    margin-top: 16px;
+}
+
+.wpd-section__body .form-table {
+    margin-top: 0;
+}
+
+/* ── Checkbox grid (widgets + post types) ──────────────────── */
+.wpd-checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 6px 20px;
+    margin-top: 4px;
+}
+
+.wpd-checkbox-item {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 3px 0;
+}
+
+.wpd-checkbox-item input[type="checkbox"] {
+    margin: 0;
+    flex-shrink: 0;
+    position: relative;
+    top: 1px;
+}
+
+.wpd-checkbox-item span {
+    flex: 1;
+    color: #1d2327;
+}
+
+.wpd-checkbox-item code {
+    font-size: 10px;
+    color: #787c82;
+    background: #f0f0f1;
+    padding: 1px 4px;
+    border-radius: 2px;
+    white-space: nowrap;
+}
+
+/* ── Banner columns grid ───────────────────────────────────── */
+.wpd-columns-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 4px;
+}
+
+.wpd-column-card {
+    border: 1px solid #c3c4c7;
+    border-radius: 3px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.wpd-column-card__head {
+    background: #f6f7f7;
+    border-bottom: 1px solid #c3c4c7;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #3c434a;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.wpd-column-card__body {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.wpd-column-card__body textarea {
+    resize: vertical;
+    font-family: monospace;
+    font-size: 12px;
+}
+
+.wpd-field-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #50575e;
+    display: block;
+    margin-top: 4px;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media screen and (max-width: 1100px) {
+    .wpd-columns-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media screen and (max-width: 782px) {
+    .wpd-section {
+        padding: 12px 16px 16px;
+    }
+
+    .wpd-checkbox-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .wpd-columns-grid {
+        grid-template-columns: 1fr;
+    }
+}
