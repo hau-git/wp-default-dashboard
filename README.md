@@ -9,12 +9,13 @@ A clean, standardized WordPress admin baseline plugin — dashboard cleanup, bra
 - **Top Banner** — Custom announcement banner with up to 4 content columns
 - **Post Types Banner** — Card-based quick-access overview per post type with live counts
 
-### Branding
+### Erscheinungsbild (Appearance)
 - **Login Branding** — Custom logo, background color/image, button color, link color on the login screen
-- **Admin Branding** — Custom footer text and admin bar link
+- **Admin Branding** — Custom footer text, admin bar link, and custom greeting (replaces "Howdy, %s")
+- **Environment Indicator** — Dropdown badge (Live=green / Staging=red) in the admin bar with a one-click link to switch environments
 - **Admin Colors** — Force a global color scheme (8 built-in WP schemes) or set custom primary and accent colors via CSS variables
 
-### Hardening
+### Sicherheit (Security)
 - **Disable XML-RPC** — Block the legacy XML-RPC interface
 - **Author Enumeration** — Block `?author=N` scans (404 or redirect)
 - **Remove Meta Tags** — Strip RSD, WLW Manifest, and WordPress generator meta
@@ -27,8 +28,7 @@ A clean, standardized WordPress admin baseline plugin — dashboard cleanup, bra
 - **Disable Emoji Scripts** — Remove unnecessary emoji detection JS and DNS prefetch
 - **Disable jQuery Migrate** — Remove jQuery Migrate from the frontend
 
-### Admin Tools
-- **Environment Indicator** — Colored badge (STAGE/LIVE) in the admin bar for all logged-in users
+### Admin-Werkzeuge (Admin Tools)
 - **Hide Update Notices** — Suppress core/plugin/theme update banners for non-admin users
 - **Maintenance Mode** — Block frontend with HTTP 503 for non-logged-in visitors
 - **Admin Menu Cleanup** — Hide specific menu items from editors and non-admins
@@ -54,9 +54,9 @@ All settings are managed through the admin interface under **Settings → WP Def
 | Tab | Features |
 |-----|----------|
 | **Dashboard** | Widget manager, top banner, post types banner, data settings |
-| **Branding** | Login screen customization, admin colors, footer and bar |
-| **Hardening** | XML-RPC, author enumeration, meta tags, editor menus, advanced hardening |
-| **Admin** | Environment indicator, update notices, maintenance mode, menu cleanup |
+| **Erscheinungsbild** | Login screen customization, admin bar greeting, environment indicator, admin colors, footer |
+| **Sicherheit** | XML-RPC, author enumeration, meta tags, editor menus, advanced hardening |
+| **Admin-Werkzeuge** | Update notices, maintenance mode, menu cleanup |
 | **Updates** | GitHub or custom server update checking |
 
 ## Extensibility
@@ -83,6 +83,59 @@ The plugin provides public hooks and filters for customization:
 All plugin data is stored in a single WordPress option: `wpd_options`. Enable "Delete Data on Uninstall" in settings to clean up when the plugin is deleted.
 
 ## Changelog
+
+### 1.2.3 — 2026-03-06
+
+**Stability / Bugfixes**
+- Fixed: Environment indicator badge never appeared when using URL-based auto-detection with "Environment" selector set to "Disabled" — hooks are now registered whenever Live URL or Staging URL is configured
+- Fixed: Removed dead `try_gutenberg_panel` removal (panel was removed in WP 5.4)
+- Fixed: `is_array()` guard added to `hide_admin_menu_items()` to prevent TypeError on corrupt stored data (PHP 8)
+
+**Performance**
+- Improved: `wpd_get_options()` now caches its result in a static variable — eliminates repeated `wp_parse_args()` + `get_defaults()` calls across multiple hooks in the same request
+- Improved: Custom admin bar greeting now hooks into `admin_bar_menu` (priority 200) instead of the `gettext` filter — `gettext` fired on every translated string (hundreds per page); `admin_bar_menu` fires once
+
+**Code Quality**
+- Fixed: Maintenance mode text is now translatable via i18n (`__()`)
+- Fixed: Removed redundant `require_once helpers.php` inside activation hook (already loaded before)
+- Fixed: `WPD_VERSION` constant and plugin header version synced to `1.2.3`
+
+---
+
+### 1.2.2 — 2026-03-06
+
+**Dashboard Tab**
+- Redesigned: Dashboard tab layout completely overhauled — each feature (Widget-Verwaltung, Oberes Banner, Inhaltstypen-Banner) is now a collapsible card with a toggle switch as its master control
+- Fixed: Widget list and Post Type list now only appear when the respective master toggle is enabled (the body collapses/expands with animation)
+- Redesigned: Top Banner columns are now displayed in a compact 2×2 card grid instead of four consecutive table rows — replacing TinyMCE editors with plain textareas (HTML supported) for a cleaner editing experience
+- Added: Active/inactive badge per section that updates live when toggling
+
+---
+
+### 1.2.1 — 2026-03-06
+
+**Erscheinungsbild**
+- Redesigned: Environment indicator dropdown now matches the new design — colored pill badge with dropdown arrow in the top bar; submenu shows "UMGEBUNG WECHSELN" header, current env with "aktuell" label (grey, non-clickable), other env with "→ wechseln" link (green)
+- Added: Auto-detection of environment — when both Live URL and Staging URL are configured on their respective sites, the badge is automatically set to the correct environment by comparing `home_url()` with the configured URLs (no manual "Environment" selection needed)
+- The manual Environment selector is retained as fallback for single-site setups without URL matching
+
+---
+
+### 1.2.0 — 2026-03-06
+
+**Settings Overhaul**
+- Tabs reorganized: Branding → Erscheinungsbild, Hardening → Sicherheit, Admin → Admin-Werkzeuge
+- Environment Indicator moved from Admin-Werkzeuge into Erscheinungsbild (it's a visual feature)
+
+**Erscheinungsbild**
+- Added: Custom admin bar greeting — replace "Howdy, %s" with any text (e.g. "Moin, %s")
+- Added: Live URL and Staging URL fields for the environment indicator
+- Redesigned: Environment indicator now shows as a dropdown in `top-secondary` with a link to switch to the other environment; Live = green badge, Staging = red badge
+
+**Translations**
+- Updated German translation (de_DE) with all new strings
+
+---
 
 ### 1.1.1 — 2026-03-05
 

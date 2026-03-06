@@ -39,11 +39,6 @@ class WPD_Dashboard {
                 continue;
             }
 
-            if ($widget_id === 'try_gutenberg_panel') {
-                remove_action('try_gutenberg_panel', 'wp_try_gutenberg_panel');
-                continue;
-            }
-
             if ($widget_context && $widget_context !== 'all') {
                 remove_meta_box($widget_id, $screen, $widget_context);
             } else {

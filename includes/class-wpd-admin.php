@@ -87,8 +87,9 @@ class WPD_Admin {
             return;
         }
         wp_die(
-            '<h1 style="font-family:sans-serif;">Wartungsarbeiten</h1><p style="font-family:sans-serif;">Die Website wird gerade gewartet. Bitte versuche es später erneut.</p>',
-            'Wartungsarbeiten',
+            '<h1 style="font-family:sans-serif;">' . esc_html__('Wartungsarbeiten', 'wpd') . '</h1>'
+            . '<p style="font-family:sans-serif;">' . esc_html__('Die Website wird gerade gewartet. Bitte versuche es später erneut.', 'wpd') . '</p>',
+            esc_html__('Wartungsarbeiten', 'wpd'),
             ['response' => 503]
         );
     }
@@ -98,6 +99,9 @@ class WPD_Admin {
             return;
         }
         $items = wpd_get_option('admin_hide_menu_items', []);
+        if (!is_array($items)) {
+            return;
+        }
         foreach ($items as $slug) {
             remove_menu_page(sanitize_text_field($slug));
         }

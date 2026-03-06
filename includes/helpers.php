@@ -3,12 +3,22 @@
 defined('ABSPATH') || exit;
 
 function wpd_get_options(): array {
+    // Cache per request. WordPress always redirects after saving options, so
+    // the cache is always fresh at the start of the next page load.
+    static $cache = null;
+
+    if ($cache !== null) {
+        return $cache;
+    }
+
     $defaults = wpd_get_defaults();
     $stored   = get_option(WPD_OPTION_KEY, []);
     if (!is_array($stored)) {
         $stored = [];
     }
-    return wp_parse_args($stored, $defaults);
+    $cache = wp_parse_args($stored, $defaults);
+
+    return $cache;
 }
 
 function wpd_get_defaults(): array {
