@@ -24,6 +24,12 @@ class WPD_Branding {
             add_action('admin_bar_menu', [$this, 'admin_bar_link'], 100);
         }
 
+        // Custom admin bar greeting
+        $greeting = $options['admin_bar_greeting'] ?? '';
+        if (!empty($greeting)) {
+            add_filter('gettext', [$this, 'custom_admin_bar_greeting'], 10, 3);
+        }
+
         // Admin color scheme — force for all users
         if (!empty($options['admin_color_scheme'])) {
             add_filter('get_user_option_admin_color', [$this, 'force_admin_color_scheme']);
@@ -110,6 +116,20 @@ class WPD_Branding {
         return $text;
     }
 
+    public function custom_admin_bar_greeting(string $translation, string $text, string $domain): string {
+        if ($domain !== 'default') {
+            return $translation;
+        }
+        if ($text !== 'Howdy, %s') {
+            return $translation;
+        }
+        $greeting = wpd_get_option('admin_bar_greeting', '');
+        if (!empty($greeting)) {
+            return $greeting;
+        }
+        return $translation;
+    }
+
     public function admin_bar_link(\WP_Admin_Bar $wp_admin_bar): void {
         $options = wpd_get_options();
         $label   = $options['admin_bar_link_label'] ?? '';
@@ -167,32 +187,69 @@ class WPD_Branding {
             return;
         }
 
-        $label = $env === 'live' ? 'LIVE' : 'STAGE';
+        $options  = wpd_get_options();
+        $is_live  = ($env === 'live');
+        $badge_label = $is_live ? __('Live', 'wpd') : __('Staging', 'wpd');
+        $badge_class = $is_live ? 'wpd-env-live' : 'wpd-env-stage';
+
+        $title = sprintf(
+            '%s: <span class="wpd-env-badge %s">%s</span>',
+            esc_html__('Umgebung', 'wpd'),
+            esc_attr($badge_class),
+            esc_html($badge_label)
+        );
 
         $wp_admin_bar->add_node([
-            'id'    => 'wpd-environment',
-            'title' => esc_html($label),
-            'href'  => false,
-            'meta'  => ['class' => 'wpd-env-' . $env],
+            'id'     => 'wpd-environment',
+            'parent' => 'top-secondary',
+            'title'  => $title,
+            'href'   => false,
+            'meta'   => ['class' => 'wpd-env-indicator'],
         ]);
+
+        if ($is_live) {
+            $switch_url   = $options['admin_environment_stage_url'] ?? '';
+            $switch_label = __('Staging öffnen', 'wpd');
+        } else {
+            $switch_url   = $options['admin_environment_live_url'] ?? '';
+            $switch_label = __('Live öffnen', 'wpd');
+        }
+
+        if (!empty($switch_url)) {
+            $wp_admin_bar->add_node([
+                'id'     => 'wpd-environment-switch',
+                'parent' => 'wpd-environment',
+                'title'  => esc_html($switch_label),
+                'href'   => esc_url($switch_url),
+                'meta'   => ['target' => '_blank'],
+            ]);
+        }
     }
 
     public function inject_environment_styles(): void {
         echo '<style id="wpd-env-styles">
-            #wpadminbar li#wp-admin-bar-wpd-environment > .ab-item {
-                font-weight: 700;
-                font-size: 11px;
-                color: #fff !important;
-                border-radius: 3px;
-                padding: 0 10px;
-                margin: 6px 4px;
-                line-height: 20px;
-                cursor: default;
-                letter-spacing: 0.05em;
+            #wpadminbar .wpd-env-indicator > .ab-item {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                height: 32px;
+                padding: 0 8px;
+                color: #c3c4c7 !important;
+                font-size: 13px;
             }
-            #wpadminbar li.wpd-env-live > .ab-item { background: #d63638 !important; }
-            #wpadminbar li.wpd-env-stage > .ab-item { background: #dba617 !important; }
-            #wpadminbar li#wp-admin-bar-wpd-environment > .ab-item:hover { opacity: 0.9; }
+            .wpd-env-badge {
+                display: inline-block;
+                padding: 2px 8px;
+                border-radius: 3px;
+                font-size: 11px;
+                font-weight: 700;
+                color: #fff;
+                line-height: 18px;
+                letter-spacing: 0.03em;
+            }
+            .wpd-env-badge.wpd-env-live { background: #00a32a; }
+            .wpd-env-badge.wpd-env-stage { background: #d63638; }
+            #wpadminbar .wpd-env-indicator .ab-submenu { min-width: 140px; }
         </style>';
     }
 }
