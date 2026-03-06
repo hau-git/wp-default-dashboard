@@ -40,6 +40,7 @@ function wpd_get_defaults(): array {
         'admin_footer_text'           => '',
         'admin_bar_link_label'        => '',
         'admin_bar_link_url'          => '',
+        'admin_bar_greeting'          => '',
 
         'enable_hardening'                 => false,
         'hardening_disable_xmlrpc'         => true,
@@ -57,6 +58,8 @@ function wpd_get_defaults(): array {
         'hardening_disable_jquery_migrate' => false,
 
         'admin_environment'                => 'off',
+        'admin_environment_live_url'       => '',
+        'admin_environment_stage_url'      => '',
         'admin_hide_update_notices'        => false,
         'enable_maintenance_mode'          => false,
         'admin_hide_menu_items'            => [],

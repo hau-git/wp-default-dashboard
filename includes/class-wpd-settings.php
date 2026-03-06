@@ -45,7 +45,7 @@ class WPD_Settings {
 
     public function get_current_tab(): string {
         $tab = isset($_GET['tab']) ? sanitize_key($_GET['tab']) : 'dashboard';
-        $valid_tabs = ['dashboard', 'branding', 'hardening', 'admin', 'updates'];
+        $valid_tabs = ['dashboard', 'appearance', 'security', 'admin-tools', 'updates'];
         return in_array($tab, $valid_tabs, true) ? $tab : 'dashboard';
     }
 
@@ -62,7 +62,7 @@ class WPD_Settings {
                 'posttypes_selected',
                 'delete_data_on_uninstall',
             ],
-            'branding' => [
+            'appearance' => [
                 'enable_login_branding',
                 'login_logo_url',
                 'login_logo_link',
@@ -75,11 +75,15 @@ class WPD_Settings {
                 'admin_footer_text',
                 'admin_bar_link_label',
                 'admin_bar_link_url',
+                'admin_bar_greeting',
+                'admin_environment',
+                'admin_environment_live_url',
+                'admin_environment_stage_url',
                 'admin_color_scheme',
                 'admin_primary_color',
                 'admin_accent_color',
             ],
-            'hardening' => [
+            'security' => [
                 'enable_hardening',
                 'hardening_disable_xmlrpc',
                 'hardening_author_enum',
@@ -95,8 +99,7 @@ class WPD_Settings {
                 'hardening_disable_emoji',
                 'hardening_disable_jquery_migrate',
             ],
-            'admin' => [
-                'admin_environment',
+            'admin-tools' => [
                 'admin_hide_update_notices',
                 'enable_maintenance_mode',
                 'admin_hide_menu_items',
@@ -118,11 +121,11 @@ class WPD_Settings {
 
         $current_tab = $this->get_current_tab();
         $tabs = [
-            'dashboard'  => __('Dashboard', 'wpd'),
-            'branding'   => __('Branding', 'wpd'),
-            'hardening'  => __('Hardening', 'wpd'),
-            'admin'      => __('Admin', 'wpd'),
-            'updates'    => __('Updates', 'wpd'),
+            'dashboard'   => __('Dashboard', 'wpd'),
+            'appearance'  => __('Erscheinungsbild', 'wpd'),
+            'security'    => __('Sicherheit', 'wpd'),
+            'admin-tools' => __('Admin-Werkzeuge', 'wpd'),
+            'updates'     => __('Updates', 'wpd'),
         ];
 
         $options = wpd_get_options();
@@ -154,14 +157,14 @@ class WPD_Settings {
             case 'dashboard':
                 $this->render_dashboard_tab($options);
                 break;
-            case 'branding':
-                $this->render_branding_tab($options);
+            case 'appearance':
+                $this->render_appearance_tab($options);
                 break;
-            case 'hardening':
-                $this->render_hardening_tab($options);
+            case 'security':
+                $this->render_security_tab($options);
                 break;
-            case 'admin':
-                $this->render_admin_tab($options);
+            case 'admin-tools':
+                $this->render_admin_tools_tab($options);
                 break;
             case 'updates':
                 $this->render_updates_tab($options);
@@ -347,7 +350,7 @@ class WPD_Settings {
         <?php
     }
 
-    protected function render_branding_tab(array $options): void {
+    protected function render_appearance_tab(array $options): void {
         ?>
         <h2><?php esc_html_e('Login Branding', 'wpd'); ?></h2>
         <p class="description"><?php esc_html_e('Customize the appearance of the WordPress login page with your own logo, colors, and background image.', 'wpd'); ?></p>
@@ -479,6 +482,53 @@ class WPD_Settings {
                     <p class="description"><?php esc_html_e('The URL for the admin bar link. Both internal and external URLs are supported.', 'wpd'); ?></p>
                 </td>
             </tr>
+            <tr>
+                <th scope="row"><?php esc_html_e('Greeting', 'wpd'); ?></th>
+                <td>
+                    <input type="text" class="regular-text"
+                           name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[admin_bar_greeting]"
+                           value="<?php echo esc_attr($options['admin_bar_greeting'] ?? ''); ?>"
+                           placeholder="<?php esc_attr_e('Moin, %s', 'wpd'); ?>">
+                    <p class="description"><?php esc_html_e('Replaces the default "Howdy, %s" greeting in the admin bar. Use %s as placeholder for the display name. Leave empty for the WordPress default.', 'wpd'); ?></p>
+                </td>
+            </tr>
+        </table>
+
+        <hr>
+        <h2><?php esc_html_e('Environment Indicator', 'wpd'); ?></h2>
+        <p class="description"><?php esc_html_e('Display a colored badge in the admin bar to identify the current environment. Helps prevent accidental changes on live sites.', 'wpd'); ?></p>
+        <table class="form-table" role="presentation">
+            <tr>
+                <th scope="row"><?php esc_html_e('Environment', 'wpd'); ?></th>
+                <td>
+                    <select name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[admin_environment]">
+                        <option value="off" <?php selected($options['admin_environment'] ?? 'off', 'off'); ?>><?php esc_html_e('Disabled', 'wpd'); ?></option>
+                        <option value="stage" <?php selected($options['admin_environment'] ?? 'off', 'stage'); ?>><?php esc_html_e('Staging', 'wpd'); ?></option>
+                        <option value="live" <?php selected($options['admin_environment'] ?? 'off', 'live'); ?>><?php esc_html_e('Live', 'wpd'); ?></option>
+                    </select>
+                    <p class="description"><?php esc_html_e('The badge is visible to all logged-in users in the admin bar — both in the backend and on the frontend.', 'wpd'); ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row"><?php esc_html_e('Live URL', 'wpd'); ?></th>
+                <td>
+                    <input type="url" class="regular-text"
+                           name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[admin_environment_live_url]"
+                           value="<?php echo esc_url($options['admin_environment_live_url'] ?? ''); ?>"
+                           placeholder="https://example.com">
+                    <p class="description"><?php esc_html_e('URL of the live site. Shown as a link in the environment dropdown when on staging.', 'wpd'); ?></p>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row"><?php esc_html_e('Staging URL', 'wpd'); ?></th>
+                <td>
+                    <input type="url" class="regular-text"
+                           name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[admin_environment_stage_url]"
+                           value="<?php echo esc_url($options['admin_environment_stage_url'] ?? ''); ?>"
+                           placeholder="https://staging.example.com">
+                    <p class="description"><?php esc_html_e('URL of the staging site. Shown as a link in the environment dropdown when on live.', 'wpd'); ?></p>
+                </td>
+            </tr>
         </table>
 
         <hr>
@@ -526,7 +576,7 @@ class WPD_Settings {
         <?php
     }
 
-    protected function render_hardening_tab(array $options): void {
+    protected function render_security_tab(array $options): void {
         ?>
         <h2><?php esc_html_e('Security Hardening', 'wpd'); ?></h2>
         <p class="description"><?php esc_html_e('Apply lightweight security measures to reduce your site\'s attack surface. These settings remove unnecessary information and disable features commonly exploited by attackers.', 'wpd'); ?></p>
@@ -703,7 +753,7 @@ class WPD_Settings {
         <?php
     }
 
-    protected function render_admin_tab(array $options): void {
+    protected function render_admin_tools_tab(array $options): void {
         $available_menu_items = [
             'edit-comments.php'       => __('Comments', 'wpd'),
             'upload.php'              => __('Media', 'wpd'),
@@ -713,23 +763,6 @@ class WPD_Settings {
         ];
         $hidden_items = $options['admin_hide_menu_items'] ?? [];
         ?>
-        <h2><?php esc_html_e('Environment Indicator', 'wpd'); ?></h2>
-        <p class="description"><?php esc_html_e('Display a colored badge in the admin bar to identify the current environment. Helps prevent accidental changes on live sites.', 'wpd'); ?></p>
-        <table class="form-table" role="presentation">
-            <tr>
-                <th scope="row"><?php esc_html_e('Environment', 'wpd'); ?></th>
-                <td>
-                    <select name="<?php echo esc_attr(WPD_OPTION_KEY); ?>[admin_environment]">
-                        <option value="off" <?php selected($options['admin_environment'] ?? 'off', 'off'); ?>><?php esc_html_e('Disabled', 'wpd'); ?></option>
-                        <option value="stage" <?php selected($options['admin_environment'] ?? 'off', 'stage'); ?>><?php esc_html_e('Stage (orange badge)', 'wpd'); ?></option>
-                        <option value="live" <?php selected($options['admin_environment'] ?? 'off', 'live'); ?>><?php esc_html_e('Live (red badge)', 'wpd'); ?></option>
-                    </select>
-                    <p class="description"><?php esc_html_e('The badge is visible to all logged-in users in the admin bar — both in the backend and on the frontend.', 'wpd'); ?></p>
-                </td>
-            </tr>
-        </table>
-
-        <hr>
         <h2><?php esc_html_e('Update Notices', 'wpd'); ?></h2>
         <table class="form-table" role="presentation">
             <tr>
@@ -941,6 +974,7 @@ class WPD_Settings {
         $sanitized['admin_footer_text']        = wp_kses_post($input['admin_footer_text'] ?? '');
         $sanitized['admin_bar_link_label']     = sanitize_text_field($input['admin_bar_link_label'] ?? '');
         $sanitized['admin_bar_link_url']       = esc_url_raw($input['admin_bar_link_url'] ?? '');
+        $sanitized['admin_bar_greeting']       = sanitize_text_field($input['admin_bar_greeting'] ?? '');
 
         $valid_schemes = ['', 'fresh', 'light', 'blue', 'coffee', 'ectoplasm', 'midnight', 'ocean', 'sunrise'];
         $scheme = $input['admin_color_scheme'] ?? '';
@@ -964,9 +998,10 @@ class WPD_Settings {
         $sanitized['hardening_disable_emoji']          = !empty($input['hardening_disable_emoji']);
         $sanitized['hardening_disable_jquery_migrate'] = !empty($input['hardening_disable_jquery_migrate']);
 
-        // Admin tab
         $env_val = $input['admin_environment'] ?? 'off';
-        $sanitized['admin_environment']         = in_array($env_val, ['off', 'live', 'stage'], true) ? $env_val : 'off';
+        $sanitized['admin_environment']              = in_array($env_val, ['off', 'live', 'stage'], true) ? $env_val : 'off';
+        $sanitized['admin_environment_live_url']     = esc_url_raw($input['admin_environment_live_url'] ?? '');
+        $sanitized['admin_environment_stage_url']    = esc_url_raw($input['admin_environment_stage_url'] ?? '');
         $sanitized['admin_hide_update_notices'] = !empty($input['admin_hide_update_notices']);
         $sanitized['enable_maintenance_mode']   = !empty($input['enable_maintenance_mode']);
         $hide_menu = [];

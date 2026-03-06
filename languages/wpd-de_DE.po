@@ -3,10 +3,10 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Default 1.0.0\n"
+"Project-Id-Version: WP Default 1.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-08 00:00+0000\n"
-"PO-Revision-Date: 2025-02-08 00:00+0000\n"
+"POT-Creation-Date: 2026-03-06 00:00+0000\n"
+"PO-Revision-Date: 2026-03-06 00:00+0000\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -40,12 +40,16 @@ msgid "Dashboard"
 msgstr "Dashboard"
 
 #: includes/class-wpd-settings.php
-msgid "Branding"
-msgstr "Branding"
+msgid "Erscheinungsbild"
+msgstr "Erscheinungsbild"
 
 #: includes/class-wpd-settings.php
-msgid "Hardening"
-msgstr "Absicherung"
+msgid "Sicherheit"
+msgstr "Sicherheit"
+
+#: includes/class-wpd-settings.php
+msgid "Admin-Werkzeuge"
+msgstr "Admin-Werkzeuge"
 
 #: includes/class-wpd-settings.php
 msgid "Updates"
@@ -584,3 +588,47 @@ msgstr ""
 #: includes/class-wpd-dashboard.php
 msgid "Create New"
 msgstr "Neu erstellen"
+
+#: includes/class-wpd-settings.php
+msgid "Greeting"
+msgstr "Begrüßung"
+
+#: includes/class-wpd-settings.php
+msgid "Replaces the default \"Howdy, %s\" greeting in the admin bar. Use %s as placeholder for the display name. Leave empty for the WordPress default."
+msgstr "Ersetzt die Standard-Begrüßung \"Howdy, %s\" in der Admin-Leiste. Verwende %s als Platzhalter für den Anzeigenamen. Leer lassen für die WordPress-Standardbegrüßung."
+
+#: includes/class-wpd-settings.php
+msgid "Live URL"
+msgstr "Live-URL"
+
+#: includes/class-wpd-settings.php
+msgid "URL of the live site. Shown as a link in the environment dropdown when on staging."
+msgstr "URL der Live-Website. Wird als Link im Umgebungs-Dropdown auf der Staging-Umgebung angezeigt."
+
+#: includes/class-wpd-settings.php
+msgid "Staging URL"
+msgstr "Staging-URL"
+
+#: includes/class-wpd-settings.php
+msgid "URL of the staging site. Shown as a link in the environment dropdown when on live."
+msgstr "URL der Staging-Website. Wird als Link im Umgebungs-Dropdown auf der Live-Umgebung angezeigt."
+
+#: includes/class-wpd-branding.php
+msgid "Live"
+msgstr "Live"
+
+#: includes/class-wpd-branding.php
+msgid "Staging"
+msgstr "Staging"
+
+#: includes/class-wpd-branding.php
+msgid "Umgebung"
+msgstr "Umgebung"
+
+#: includes/class-wpd-branding.php
+msgid "Staging öffnen"
+msgstr "Staging öffnen"
+
+#: includes/class-wpd-branding.php
+msgid "Live öffnen"
+msgstr "Live öffnen"
