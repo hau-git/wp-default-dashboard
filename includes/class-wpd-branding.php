@@ -24,12 +24,9 @@ class WPD_Branding {
             add_action('admin_bar_menu', [$this, 'admin_bar_link'], 100);
         }
 
-        // Custom admin bar greeting — hook into admin_bar_menu at late priority
-        // so the my-account node already exists; much cheaper than gettext filter.
-        $greeting = $options['admin_bar_greeting'] ?? '';
-        if (!empty($greeting)) {
-            add_action('admin_bar_menu', [$this, 'custom_admin_bar_greeting'], 200);
-        }
+        // Custom admin bar greeting — intercept at translation level so it
+        // reliably replaces "Howdy" regardless of WP version or hook order.
+        add_filter('gettext', [$this, 'filter_admin_bar_greeting'], 10, 3);
 
         // Admin color scheme — force for all users
         if (!empty($options['admin_color_scheme'])) {
@@ -127,34 +124,13 @@ class WPD_Branding {
         return $text;
     }
 
-    public function custom_admin_bar_greeting(\WP_Admin_Bar $wp_admin_bar): void {
+    public function filter_admin_bar_greeting(string $translation, string $text, string $domain): string {
+        // Only intercept core WP's "Howdy, %s" admin bar greeting.
+        if ($text !== 'Howdy, %s' || $domain !== 'default') {
+            return $translation;
+        }
         $greeting = wpd_get_option('admin_bar_greeting', '');
-        if (empty($greeting)) {
-            return;
-        }
-
-        $node = $wp_admin_bar->get_node('my-account');
-        if (!$node) {
-            return;
-        }
-
-        $current_user = wp_get_current_user();
-        $display_name = $current_user->display_name ?? '';
-
-        // Preserve the avatar <img> that WP embeds in the node title.
-        $avatar = '';
-        if (preg_match('/<img[^>]+>/i', $node->title, $m)) {
-            $avatar = $m[0];
-        }
-
-        $new_title = esc_html($greeting)
-            . ' <span class="display-name">' . esc_html($display_name) . '</span>'
-            . $avatar;
-
-        $wp_admin_bar->add_node([
-            'id'    => 'my-account',
-            'title' => $new_title,
-        ]);
+        return !empty($greeting) ? esc_html($greeting) . ' %s' : $translation;
     }
 
     public function admin_bar_link(\WP_Admin_Bar $wp_admin_bar): void {
@@ -277,8 +253,11 @@ class WPD_Branding {
             'id'     => 'wpd-environment',
             'parent' => 'top-secondary',
             'title'  => $title,
-            'href'   => false,
-            'meta'   => ['class' => 'wpd-env-indicator'],
+            'href'   => '#',
+            'meta'   => [
+                'class'   => 'wpd-env-indicator',
+                'onclick' => 'return false;',
+            ],
         ]);
 
         // Dropdown header
@@ -327,33 +306,37 @@ class WPD_Branding {
     public function inject_environment_styles(): void {
         echo '<style id="wpd-env-styles">
             /* ── Top-bar trigger ─────────────────────────────── */
-            #wpadminbar li.wpd-env-indicator > .ab-item,
-            #wpadminbar li.wpd-env-indicator > .ab-empty-item {
+            #wpadminbar #wp-admin-bar-wpd-environment > .ab-item {
                 display: flex !important;
                 align-items: center !important;
                 gap: 6px !important;
                 height: 32px !important;
-                padding: 0 8px !important;
+                padding: 0 10px !important;
                 line-height: 32px !important;
                 color: #c3c4c7 !important;
                 font-size: 13px !important;
                 background: transparent !important;
                 box-sizing: border-box !important;
+                text-decoration: none !important;
+                cursor: default !important;
+            }
+            #wpadminbar #wp-admin-bar-wpd-environment > .ab-item:focus {
+                color: #c3c4c7 !important;
+                background: transparent !important;
             }
             .wpd-env-badge {
                 display: inline-flex;
                 align-items: center;
-                gap: 5px;
-                padding: 2px 9px;
-                border-radius: 4px;
+                gap: 4px;
+                padding: 3px 10px;
+                border-radius: 3px;
                 font-size: 12px;
                 font-weight: 700;
                 color: #fff;
                 letter-spacing: 0.02em;
                 line-height: 1.4;
-                vertical-align: middle;
             }
-            .wpd-env-arrow { font-size: 9px; opacity: 0.85; line-height: 1; }
+            .wpd-env-arrow { font-size: 9px; opacity: 0.8; line-height: 1; }
             .wpd-env-badge.wpd-env-live  { background: #00a32a; }
             .wpd-env-badge.wpd-env-stage { background: #d63638; }
 
