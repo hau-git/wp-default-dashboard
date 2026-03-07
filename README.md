@@ -84,6 +84,15 @@ All plugin data is stored in a single WordPress option: `wpd_options`. Enable "D
 
 ## Changelog
 
+### 1.3.1 — 2026-03-07
+
+**Bugfixes**
+- Fixed: Custom admin bar greeting (e.g. "Moin,") was not replacing "Howdy" — `add_node()` on `admin_bar_menu` is unreliable across WP versions; reverted to `gettext` filter intercepting `'Howdy, %s'` directly (the performance note in 1.2.3 was premature — the filter short-circuits on the first string comparison and has no measurable overhead)
+- Fixed: Environment indicator in the admin bar was not full-height — `href: false` caused WP to render a `<div class="ab-empty-item">` which does not inherit WP's `height: 32px` rule (that rule targets `a.ab-item` only); changed to `href: '#'` with `onclick="return false;"` to force an `<a>` tag and the correct height
+- Improved: Environment indicator CSS selector changed from class-based (`.wpd-env-indicator`) to ID-based (`#wp-admin-bar-wpd-environment`) for maximum specificity, preventing WP admin bar styles from overriding layout
+
+---
+
 ### 1.2.3 — 2026-03-06
 
 **Stability / Bugfixes**
