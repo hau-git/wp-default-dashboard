@@ -130,7 +130,13 @@ class WPD_Branding {
             return $translation;
         }
         $greeting = wpd_get_option('admin_bar_greeting', '');
-        return !empty($greeting) ? esc_html($greeting) . ' %s' : $translation;
+        if (empty($greeting)) {
+            return $translation;
+        }
+        // Strip any stray '%s' the user may have saved so we never end up
+        // with two placeholders when WordPress calls sprintf() on the result.
+        $greeting_text = rtrim( str_replace( '%s', '', esc_html( $greeting ) ) );
+        return $greeting_text . ' %s';
     }
 
     public function admin_bar_link(\WP_Admin_Bar $wp_admin_bar): void {
